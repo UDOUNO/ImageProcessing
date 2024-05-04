@@ -1,18 +1,22 @@
 package com.example.myapplication
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
+import com.github.dhaval2404.imagepicker.ImagePicker
+import java.io.File
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         val loadImage = findViewById(R.id.load_image) as Button
         loadImage.setOnClickListener{
             openGallery()
-
         }
         val takePhoto = findViewById(R.id.take_photo) as Button
         takePhoto.setOnClickListener{
@@ -36,35 +39,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun dispatchTakePictureIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
-            startActivityForResult(takePictureIntent, 228)
+            ImagePicker.with(this)
+                .cameraOnly()
+                .start(111)
         } catch (e: ActivityNotFoundException) {
         }
     }
 
     private fun openGallery() {
-        val openGalleryIntent = Intent(Intent.ACTION_PICK,EXTERNAL_CONTENT_URI)
         try{
-            startActivityForResult(openGalleryIntent,2001)
+            ImagePicker.with(this)
+                .galleryOnly()
+                .start(222)
         } catch (e: ActivityNotFoundException){
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == 2001 && resultCode == RESULT_OK){
-            goToImageFactory()
-        }
-        if(requestCode == 228 && resultCode == RESULT_OK){
-            val bitmap = data?.extras?.get("data") as Bitmap
-            MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "pictureFromCam" ,"")
-            goToImageFactory()
+        if(resultCode == Activity.RESULT_OK){
+            val uri: Uri = data?.data!!
+            goToImageFactory(uri)
         }
     }
 
-    fun goToImageFactory(){
+    fun goToImageFactory(uri: Uri){
         val factoryIntent = Intent(this,ImageFactory::class.java)
+        factoryIntent.putExtra("imageUri",uri.toString())
         startActivity(factoryIntent)
     }
 }
