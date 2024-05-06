@@ -10,29 +10,17 @@
 
     <ImageView
         android:id="@+id/image_demo"
-        android:layout_width="391dp"
-        android:layout_height="544dp"
+        android:layout_width="409dp"
+        android:layout_height="577dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.347"
+        app:layout_constraintVertical_bias="0.32"
         app:srcCompat="@drawable/violet_cat"
         tools:srcCompat="@drawable/violet_cat"
         tools:visibility="visible" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="391dp"
-        android:layout_height="74dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.55"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_demo"
-        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/go_to_main"
@@ -40,6 +28,7 @@
         android:layout_height="39dp"
         android:background="#00FFFFFF"
         android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/image_demo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.029"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,5 +36,24 @@
         app:srcCompat="@android:drawable/ic_menu_revert"
         tools:srcCompat="@android:drawable/ic_menu_revert"
         tools:visibility="visible" />
+
+    <HorizontalScrollView
+        android:layout_width="409dp"
+        android:layout_height="90dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_demo"
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            tools:visibility="visible"/>
+    </HorizontalScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
