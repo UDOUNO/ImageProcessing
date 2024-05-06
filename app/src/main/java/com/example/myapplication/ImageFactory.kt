@@ -4,15 +4,35 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 
+private fun saveBitmap(finalBitmap: Bitmap) {
+    val root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()
+    val myDir = File("$root")
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    val fname = "Shutta_$timeStamp.jpg"
+    val file = File(myDir, fname)
+    if (file.exists()) file.delete()
+    try {
+        val out = FileOutputStream(file)
+        finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+        out.flush()
+        out.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
 class ImageFactory : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +43,7 @@ class ImageFactory : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         val goToMain = findViewById(R.id.go_to_main) as ImageButton
         goToMain.setOnClickListener{
             val mainActivity = Intent(this,MainActivity::class.java)
@@ -74,6 +95,13 @@ class ImageFactory : AppCompatActivity() {
             bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
             bitmap = ColorFilters.blackWhiteColor(bitmap)
             imageDemo.setImageBitmap(bitmap)
+        }
+
+        val saveImage = findViewById(R.id.save_changes) as ImageButton
+        saveImage.setOnClickListener {
+            saveBitmap(bitmap)
+            val mainActivity = Intent(this,MainActivity::class.java)
+            startActivity(mainActivity)
         }
     }
 }

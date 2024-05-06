@@ -8,6 +8,23 @@
     android:background="@color/mainBackground"
     tools:context=".ImageFactory">
 
+    <ImageButton
+        android:id="@+id/save_changes"
+        android:layout_width="34dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="4dp"
+        android:background="#00FFFFFF"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/image_demo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintStart_toEndOf="@+id/go_to_main"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.001"
+        app:srcCompat="@drawable/baseline_save_black_48dp"
+        tools:srcCompat="@drawable/baseline_save_black_48dp"
+        tools:visibility="visible"/>
+
     <ImageView
         android:id="@+id/image_demo"
         android:layout_width="382dp"
@@ -25,13 +42,13 @@
 
     <ImageButton
         android:id="@+id/go_to_main"
-        android:layout_width="40dp"
-        android:layout_height="41dp"
+        android:layout_width="33dp"
+        android:layout_height="31dp"
         android:background="#00FFFFFF"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/image_demo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.032"
+        app:layout_constraintHorizontal_bias="0.031"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
@@ -40,6 +57,7 @@
         tools:visibility="visible" />
 
     <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="387dp"
         android:layout_height="68dp"
         android:visibility="visible"
@@ -71,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
-                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+                tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/gray_filter"
@@ -79,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
-                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+                tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/green_filter"
@@ -87,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
-                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+                tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/blue_filter"
@@ -95,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
-                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+                tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/red_filter"
