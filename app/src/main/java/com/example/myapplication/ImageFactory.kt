@@ -32,7 +32,48 @@ class ImageFactory : AppCompatActivity() {
         val temp = intent.getStringExtra("imageUri")
         val uri:Uri= Uri.parse(temp)
         val imageDemo: ImageView = findViewById(R.id.image_demo)
-        val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+        var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
         imageDemo.setImageBitmap(bitmap)
+
+        val redFilter = findViewById(R.id.red_filter) as ImageButton
+        redFilter.setOnClickListener{
+            bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+            bitmap = ColorFilters.redColor(bitmap)
+            imageDemo.setImageBitmap(bitmap)
+        }
+
+        val blueFilter = findViewById(R.id.blue_filter) as ImageButton
+        blueFilter.setOnClickListener{
+            bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+            bitmap = ColorFilters.blueColor(bitmap)
+            imageDemo.setImageBitmap(bitmap)
+        }
+
+        val greenFilter = findViewById(R.id.green_filter) as ImageButton
+        greenFilter.setOnClickListener{
+            bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+            bitmap = ColorFilters.greenColor(bitmap)
+            imageDemo.setImageBitmap(bitmap)
+        }
+
+        val grayFilter = findViewById(R.id.gray_filter) as ImageButton
+        grayFilter.setOnClickListener{
+            bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+            bitmap = ColorFilters.grayColor(bitmap)
+            imageDemo.setImageBitmap(bitmap)
+        }
+
+        val cancelChanges = findViewById(R.id.cancel_changes) as ImageButton
+        cancelChanges.setOnClickListener{
+            bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+            imageDemo.setImageBitmap(bitmap)
+        }
+
+        val blackWhiteFilter = findViewById(R.id.black_white_filter) as ImageButton
+        blackWhiteFilter.setOnClickListener{
+            bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+            bitmap = ColorFilters.blackWhiteColor(bitmap)
+            imageDemo.setImageBitmap(bitmap)
+        }
     }
 }

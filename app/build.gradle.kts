@@ -36,7 +36,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.cardview)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.recyclerview.selection)
     implementation(libs.androidx.core.ktx)

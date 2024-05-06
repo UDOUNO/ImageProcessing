@@ -10,36 +10,38 @@
 
     <ImageView
         android:id="@+id/image_demo"
-        android:layout_width="409dp"
-        android:layout_height="577dp"
+        android:layout_width="382dp"
+        android:layout_height="559dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.413"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.32"
+        app:layout_constraintVertical_bias="0.33"
         app:srcCompat="@drawable/violet_cat"
         tools:srcCompat="@drawable/violet_cat"
         tools:visibility="visible" />
 
     <ImageButton
         android:id="@+id/go_to_main"
-        android:layout_width="39dp"
-        android:layout_height="39dp"
+        android:layout_width="40dp"
+        android:layout_height="41dp"
         android:background="#00FFFFFF"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/image_demo"
+        app:layout_constraintBottom_toBottomOf="@+id/image_demo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.029"
+        app:layout_constraintHorizontal_bias="0.032"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/ic_menu_revert"
         tools:srcCompat="@android:drawable/ic_menu_revert"
         tools:visibility="visible" />
 
     <HorizontalScrollView
-        android:layout_width="409dp"
-        android:layout_height="90dp"
+        android:layout_width="387dp"
+        android:layout_height="68dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +55,56 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="visible"
-            tools:visibility="visible"/>
+            tools:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/cancel_changes"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+                tools:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+            <ImageButton
+                android:id="@+id/black_white_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_photo_black_48dp"
+                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+
+            <ImageButton
+                android:id="@+id/gray_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_photo_black_48dp"
+                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+
+            <ImageButton
+                android:id="@+id/green_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_photo_black_48dp"
+                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+
+            <ImageButton
+                android:id="@+id/blue_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_photo_black_48dp"
+                tools:srcCompat="@drawable/ic_photo_black_48dp"/>
+
+            <ImageButton
+                android:id="@+id/red_filter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_photo_black_48dp"
+                tools:srcCompat="@drawable/ic_photo_black_48dp" />
+        </LinearLayout>
     </HorizontalScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
