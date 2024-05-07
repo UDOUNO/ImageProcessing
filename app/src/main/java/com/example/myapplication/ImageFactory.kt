@@ -84,6 +84,7 @@ class ImageFactory : AppCompatActivity() {
             val slider = findViewById(R.id.seekBar) as SeekBar
             slider.visibility = View.INVISIBLE
             imageDemo.setImageBitmap(temp2Image)
+            bitmap = temp2Image
         }
 
         val blackWhiteFilter = findViewById(R.id.black_white_filter) as ImageButton
