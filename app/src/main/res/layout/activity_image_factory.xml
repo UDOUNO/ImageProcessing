@@ -27,15 +27,14 @@
 
     <ImageView
         android:id="@+id/image_demo"
-        android:layout_width="382dp"
-        android:layout_height="559dp"
+        android:layout_width="381dp"
+        android:layout_height="522dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.413"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.33"
+        app:layout_constraintVertical_bias="0.233"
         app:srcCompat="@drawable/violet_cat"
         tools:srcCompat="@drawable/violet_cat"
         tools:visibility="visible" />
@@ -64,8 +63,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_demo"
-        app:layout_constraintVertical_bias="0.0"
         tools:visibility="visible">
 
         <LinearLayout
@@ -84,6 +81,14 @@
                 tools:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
             <ImageButton
+                android:id="@+id/contrast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_photo_black_48dp"
+                tools:srcCompat="@drawable/ic_photo_black_48dp" />
+
+            <ImageButton
                 android:id="@+id/black_white_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,7 +99,7 @@
             <ImageButton
                 android:id="@+id/gray_filter"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
@@ -124,5 +129,31 @@
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
         </LinearLayout>
     </HorizontalScrollView>
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="381dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="2dp"
+        android:visibility="invisible"
+        android:max = "100"
+        android:progress="1"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_demo"
+        tools:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/slider_val"
+        android:layout_width="28dp"
+        android:layout_height="25dp"
+        android:text="0"
+        android:textColor="@color/black"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/seekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="invisible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
