@@ -1,8 +1,12 @@
 package com.example.myapplication
 
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -11,31 +15,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.io.File
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.Objects
 
-private fun saveBitmap(finalBitmap: Bitmap) {
-    val root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()
-    val myDir = File("$root")
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-    val fname = "Shutta_$timeStamp.jpg"
-    val file = File(myDir, fname)
-    if (file.exists()) file.delete()
-    try {
-        val out = FileOutputStream(file)
-        finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-        out.flush()
-        out.close()
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
 class ImageFactory : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +32,7 @@ class ImageFactory : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         val goToMain = findViewById(R.id.go_to_main) as ImageButton
         goToMain.setOnClickListener{
             val mainActivity = Intent(this,MainActivity::class.java)
@@ -140,4 +127,36 @@ class ImageFactory : AppCompatActivity() {
             })
         }
     }
+
+    private fun saveBitmap(bitmap: Bitmap) {
+        val images: Uri
+        val contentResolver: ContentResolver = contentResolver
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            images = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        } else {
+            images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+
+        var contentValues = ContentValues()
+
+        contentValues.put(
+            MediaStore.Images.Media.DISPLAY_NAME, System.currentTimeMillis().toString() + ".jpg"
+        )
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, "images/*")
+        var uri: Uri? = contentResolver.insert(images, contentValues)
+
+        try {
+            var outputStream =
+                Objects.requireNonNull(uri)?.let { contentResolver.openOutputStream(it) }
+            if (outputStream != null) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            }
+            Objects.requireNonNull(outputStream)
+            Toast.makeText(this, "ImageSaved", Toast.LENGTH_LONG).show()
+        } catch (_: Exception) {
+            Toast.makeText(this, "ImageNotSaved", Toast.LENGTH_LONG).show()
+        }
+    }
+
 }
