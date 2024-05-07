@@ -1,10 +1,5 @@
 package com.example.myapplication
 
-import android.R.attr.bitmap
-import android.R.attr.height
-import android.R.attr.width
-import android.R.attr.x
-import android.R.attr.y
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.core.graphics.alpha
