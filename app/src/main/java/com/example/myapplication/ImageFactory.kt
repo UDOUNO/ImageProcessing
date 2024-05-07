@@ -110,7 +110,7 @@ class ImageFactory : AppCompatActivity() {
             slider.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(
                     seekBar: SeekBar?,
-                    progress: Int,
+                    progress: Int ,
                     fromUser: Boolean
                 ) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
@@ -119,13 +119,27 @@ class ImageFactory : AppCompatActivity() {
                     bitmap = AlgoFilters.contrast(tempImage,progress)
                     mainImage= AlgoFilters.contrast(temp2Image,progress)
                     imageDemo.setImageBitmap(bitmap)
+
                 }
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
+                    slider.progress
                     mTextView.visibility = View.INVISIBLE
                 }
             })
+        }
+
+        val imageTurnRight = findViewById(R.id.image_turn_right) as ImageButton
+        imageTurnRight.setOnClickListener{
+            bitmap = anotherAlgos.imageTurnRight(bitmap)
+            imageDemo.setImageBitmap(bitmap)
+        }
+
+        val imageTurnLeft = findViewById(R.id.image_turn_left) as ImageButton
+        imageTurnLeft.setOnClickListener{
+            bitmap = anotherAlgos.imageTurnLeft(bitmap)
+            imageDemo.setImageBitmap(bitmap)
         }
     }
 

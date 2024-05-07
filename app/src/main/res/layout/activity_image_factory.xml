@@ -156,4 +156,26 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="invisible" />
 
+    <ImageButton
+        android:id="@+id/image_turn_right"
+        android:layout_width="37dp"
+        android:layout_height="31dp"
+        android:rotationY="-180"
+        app:layout_constraintEnd_toStartOf="@+id/save_changes"
+        app:layout_constraintHorizontal_bias="0.018"
+        app:layout_constraintStart_toEndOf="@+id/image_turn_left"
+        app:srcCompat="@drawable/cast_ic_notification_rewind"
+        tools:layout_editor_absoluteY="2dp"
+        tools:srcCompat="@drawable/cast_ic_notification_rewind" />
+
+    <ImageButton
+        android:id="@+id/image_turn_left"
+        android:layout_width="37dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="128dp"
+        app:layout_constraintStart_toEndOf="@+id/go_to_main"
+        app:srcCompat="@drawable/quantum_ic_replay_white_24"
+        tools:layout_editor_absoluteY="2dp"
+        tools:srcCompat="@drawable/cast_ic_notification_rewind" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

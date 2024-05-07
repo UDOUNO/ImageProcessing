@@ -6,11 +6,11 @@ import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import kotlin.math.PI
+import kotlin.math.exp
+import kotlin.math.sqrt
 
 object AlgoFilters {
-    fun blur(image: Bitmap): Bitmap {
-        return image
-    }
 
     fun contrast(image: Bitmap, Value: Int): Bitmap {
         var value = (100.0 + Value) / 100.0
