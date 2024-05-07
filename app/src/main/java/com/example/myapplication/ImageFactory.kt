@@ -22,22 +22,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.util.Objects
 
-private fun saveBitmap(finalBitmap: Bitmap) {
-    val root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString()
-    val myDir = File("$root")
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-    val fname = "Shutta_$timeStamp.jpg"
-    val file = File(myDir, fname)
-    if (file.exists()) file.delete()
-    try {
-        val out = FileOutputStream(file)
-        finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-        out.flush()
-        out.close()
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
 class ImageFactory : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
