@@ -141,6 +141,11 @@ class ImageFactory : AppCompatActivity() {
             bitmap = anotherAlgos.imageTurnLeft(bitmap)
             imageDemo.setImageBitmap(bitmap)
         }
+        val gaussianFilter = findViewById(R.id.gaussian_filter) as ImageButton
+        gaussianFilter.setOnClickListener{
+            bitmap = AlgoFilters.gaussianFilter(bitmap,7)
+            imageDemo.setImageBitmap(bitmap)
+        }
     }
 
     private fun saveBitmap(bitmap: Bitmap) {

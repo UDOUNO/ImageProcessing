@@ -81,6 +81,13 @@
                 tools:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
             <ImageButton
+                android:id="@+id/gaussian_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_photo_black_48dp" />
+
+            <ImageButton
                 android:id="@+id/contrast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,7 +106,7 @@
             <ImageButton
                 android:id="@+id/gray_filter"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
@@ -122,8 +129,8 @@
 
             <ImageButton
                 android:id="@+id/red_filter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
