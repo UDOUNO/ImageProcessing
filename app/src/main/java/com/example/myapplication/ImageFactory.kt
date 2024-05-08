@@ -124,7 +124,6 @@ class ImageFactory : AppCompatActivity() {
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
-                    slider.progress
                     mTextView.visibility = View.INVISIBLE
                 }
             })
@@ -141,10 +140,50 @@ class ImageFactory : AppCompatActivity() {
             bitmap = anotherAlgos.imageTurnLeft(bitmap)
             imageDemo.setImageBitmap(bitmap)
         }
+
         val gaussianFilter = findViewById(R.id.gaussian_filter) as ImageButton
         gaussianFilter.setOnClickListener{
-            bitmap = AlgoFilters.gaussianFilter(bitmap,7)
-            imageDemo.setImageBitmap(bitmap)
+            val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
+            slider.visibility = View.INVISIBLE
+            var tempImage = bitmap
+            val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
+            sliderGaus.visibility = View.VISIBLE
+            sliderGaus.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int ,
+                    fromUser: Boolean
+                ) {}
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    if(sliderGaus.progress%2==0){
+                        sliderGaus.progress +=1
+                    }
+                    bitmap = AlgoFilters.gaussianFilter(tempImage,0,sliderGaus.progress,1)
+                    imageDemo.setImageBitmap(bitmap)
+                }
+            })
+        }
+
+        val sharpnessFilter = findViewById(R.id.sharpness) as ImageButton
+        sharpnessFilter.setOnClickListener{
+            val slider = findViewById(R.id.seek_bar_sharpness) as SeekBar
+            slider.visibility = View.INVISIBLE
+            var tempImage = bitmap
+            val sliderGaus = findViewById(R.id.seek_bar_sharpness) as SeekBar
+            sliderGaus.visibility = View.VISIBLE
+            sliderGaus.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int ,
+                    fromUser: Boolean
+                ) {}
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    bitmap = AlgoFilters.gaussianFilter(tempImage,1,3,0)
+                    imageDemo.setImageBitmap(bitmap)
+                }
+            })
         }
     }
 

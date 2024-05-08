@@ -37,9 +37,16 @@ object AlgoFilters {
         return weights
     }
 
-    fun gaussianFilter(image: Bitmap, kernelSize: Int): Bitmap {
+    fun gaussianFilter(image: Bitmap,koeff:Int, kernelSize: Int, flag: Int): Bitmap {
         var result: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
-        var weights = makeKernel(kernelSize)
+        var weights: Array<Double>
+        if(flag == 1){
+            weights = makeKernel(kernelSize)
+        }
+        else{
+            weights = arrayOf (0.0,-1.0*koeff,0.0,-1.0*koeff,5.0*koeff,-1.0*koeff,0.0,-1.0*koeff,0.0)
+        }
+
         val width = image.width
         val height = image.height
         val border1: Int = floor((kernelSize / 2).toDouble()).toInt()
