@@ -22,4 +22,8 @@ object anotherAlgos {
         }
         return result
     }
+
+    fun findFaces(image: Bitmap){
+
+    }
 }
