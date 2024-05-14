@@ -42,7 +42,7 @@ class ImageFactory : AppCompatActivity() {
             startActivity(mainActivity)
         }
         val intent = intent
-        var imageHistory = Array<String>(5, init = {""})
+        var imageHistory = Array<String>(5, init = { "" })
         val temp = intent.getStringExtra("imageUri")
         val uri: Uri = Uri.parse(temp)
         val imageDemo: ImageView = findViewById(R.id.image_demo)
@@ -174,13 +174,13 @@ class ImageFactory : AppCompatActivity() {
         }
 
         val applyFilter = findViewById(R.id.apply_filter) as ImageButton
-        applyFilter.setOnClickListener{
+        applyFilter.setOnClickListener {
             val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
             slider.visibility = View.INVISIBLE
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.INVISIBLE
             mainImage = Bitmap.createBitmap(tempImage)
-            Log.e("","Filter Applied")
+            Log.e("", "Filter Applied")
         }
 
         val sharpnessFilter = findViewById(R.id.sharpness) as ImageButton
@@ -207,11 +207,21 @@ class ImageFactory : AppCompatActivity() {
                 }
             })
         }
+        val imageReSize = findViewById(R.id.image_resize) as ImageButton
+        imageReSize.setOnClickListener {
+            val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
+            slider.visibility = View.INVISIBLE
+            val sliderContrast = findViewById(R.id.seekBar) as SeekBar
+            sliderContrast.visibility = View.INVISIBLE
+            tempImage = AlgoFilters.imageResize(mainImage, 2.0)
+            imageDemo.setImageBitmap(tempImage)
+        }
     }
 
-    private fun saveToTemp(){
+    private fun saveToTemp() {
 
     }
+
     private fun saveBitmap(bitmap: Bitmap) {
         val images: Uri
         val contentResolver: ContentResolver = contentResolver
