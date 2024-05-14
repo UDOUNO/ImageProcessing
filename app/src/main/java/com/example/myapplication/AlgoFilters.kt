@@ -9,12 +9,18 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
+import androidx.core.graphics.BitmapCompat
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.exp
 import kotlin.math.floor
 import kotlin.math.sqrt
@@ -75,50 +81,6 @@ object AlgoFilters {
             0.0, -1.0 * koeff, 0.0, -1.0 * koeff, 5.0 * koeff, -1.0 * koeff, 0.0, -1.0 * koeff, 0.0
         )
     }
-//    fun gaussianFilter(image: Bitmap, koeff: Int, kernelSize: Int, flag: Int): Bitmap {
-//        var result: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
-//        var weights: Array<Double>
-//        if (flag == 1) {
-//            weights = makeGausKernel(kernelSize)
-//        } else {
-//
-//        }
-//
-//        val width = image.width
-//        val height = image.height
-//        val border1: Int = floor((kernelSize / 2).toDouble()).toInt()
-//        val border2: Int = height - floor((kernelSize / 2).toDouble()).toInt()
-//        val border2B: Int = width - floor((kernelSize / 2).toDouble()).toInt()
-//        for (y in border1..<border2) {
-//            for (x in border1..<border2B) {
-//
-//                var sumColorRed: Double = 0.0
-//                var sumColorGreen: Double = 0.0
-//                var sumColorBlue: Double = 0.0
-//                var pix = image.getPixel(x, y)
-//                for (kY in -border1..border1) {
-//                    for (kX in -border1..border1) {
-//
-//                        var maskPos =
-//                            ((kX + floor((kernelSize / 2).toDouble())) + (kY + floor((kernelSize / 2).toDouble())) * kernelSize).toInt()
-//
-//                        sumColorRed += (image.getPixel(x - kX, y - kY).red * weights[maskPos])
-//                        sumColorGreen += (image.getPixel(x - kX, y - kY).green * weights[maskPos])
-//                        sumColorBlue += (image.getPixel(x - kX, y - kY).blue * weights[maskPos])
-//                    }
-//                }
-//                result.setPixel(
-//                    x, y, Color.argb(
-//                        pix.alpha, sumColorRed.toInt(), sumColorGreen.toInt(), sumColorBlue.toInt()
-//                    )
-//                )
-//            }
-//        }
-//
-//        return result
-//    }
-//
-
 
     fun applyKernelToBitmap(image: Bitmap, weights: Array<Double>): Bitmap {
         var result: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
@@ -135,6 +97,7 @@ object AlgoFilters {
                 var sumColorRed: Double = 0.0
                 var sumColorGreen: Double = 0.0
                 var sumColorBlue: Double = 0.0
+                var sumColorAlpha:Double = 0.0
                 for (kY in -border1..border1) {
                     for (kX in -border1..border1) {
 
@@ -144,13 +107,14 @@ object AlgoFilters {
                         sumColorRed += (tempIm.getPixel(x - kX, y - kY).red * weights[maskPos])
                         sumColorGreen += (tempIm.getPixel(x - kX, y - kY).green * weights[maskPos])
                         sumColorBlue += (tempIm.getPixel(x - kX, y - kY).blue * weights[maskPos])
+                        sumColorAlpha += (tempIm.getPixel(x - kX, y - kY).alpha * weights[maskPos])
                     }
                 }
                 result.setPixel(
                     x - floor((kernelSize / 2).toDouble()).toInt(),
                     y - floor((kernelSize / 2).toDouble()).toInt(),
                     Color.argb(
-                        255, sumColorRed.toInt(), sumColorGreen.toInt(), sumColorBlue.toInt()
+                        sumColorAlpha.toInt(), sumColorRed.toInt(), sumColorGreen.toInt(), sumColorBlue.toInt()
                     )
                 )
             }
@@ -159,6 +123,43 @@ object AlgoFilters {
         return result
     }
 
+    fun luminanceAsPercent(color:Int): Double {
+        return (0.2126*color.red+0.7152*color.green+0.0722*color.blue)
+    }
+    fun unSharpMask(image:Bitmap, kernelSize:Int): Bitmap {
+        var blurImage = gaussFilter(image,kernelSize)
+        var sharpImage = Bitmap.createBitmap(image.width,image.height,Bitmap.Config.ARGB_8888)
+        for(i in 0..<image.height)
+        {
+            for(j in 0..<image.width){
+                var origPix = image.getPixel(j,i)
+                var blurPix = blurImage.getPixel(j,i)
+                var pixRed = origPix.red-blurPix.red+origPix.red
+                var pixGreen = origPix.green-blurPix.green+origPix.green
+                var pixBlue = origPix.blue-blurPix.blue+origPix.blue
+                if(pixRed > 255){
+                    pixRed = 255
+                }
+                if(pixRed < 0){
+                    pixRed = 0
+                }
+                if(pixGreen > 255){
+                    pixGreen = 255
+                }
+                if(pixGreen < 0){
+                    pixGreen = 0
+                }
+                if(pixBlue > 255){
+                    pixBlue = 255
+                }
+                if(pixBlue < 0){
+                    pixBlue = 0
+                }
+                sharpImage.setPixel(j,i,Color.argb(blurPix.alpha,pixRed,pixGreen ,pixBlue))
+            }
+        }
+        return sharpImage
+    }
     fun gaussFilter(image: Bitmap, kernelSize: Int): Bitmap {
         return applyKernelToBitmap(image, makeGausKernel(kernelSize));
     }

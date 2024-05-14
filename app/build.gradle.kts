@@ -36,7 +36,6 @@ android {
 }
 
 dependencies {
-    implementation (libs.opencv)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.recyclerview.selection)
     implementation(libs.androidx.core.ktx)
