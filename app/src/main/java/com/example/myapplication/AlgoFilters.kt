@@ -29,7 +29,7 @@ object AlgoFilters {
         )
         val canvas = Canvas(result)
         val paint = Paint()
-        paint.setColor(Color.argb(255, 0, 0, 0))
+        paint.setColor(Color.argb(255, 255, 255, 255))
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
         var pixels = IntArray(image.width * image.height)
         image.getPixels(pixels, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight())
