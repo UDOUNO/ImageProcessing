@@ -23,12 +23,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.drawToBitmap
+import org.opencv.android.OpenCVLoader
+import org.opencv.core.Core
 import java.util.Objects
 
 class ImageFactory : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
         setContentView(R.layout.activity_image_factory)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -215,6 +218,16 @@ class ImageFactory : AppCompatActivity() {
             sliderContrast.visibility = View.INVISIBLE
             tempImage = AlgoFilters.imageResize(mainImage, 2.0)
             imageDemo.setImageBitmap(tempImage)
+        }
+
+        val faceDetection = findViewById(R.id.find_face) as ImageButton
+        faceDetection.setOnClickListener{
+            val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
+            slider.visibility = View.INVISIBLE
+            val sliderContrast = findViewById(R.id.seekBar) as SeekBar
+            sliderContrast.visibility = View.INVISIBLE
+            tempImage = FaceRecognition.drawRectangles(mainImage);
+            imageDemo.setImageBitmap(tempImage);
         }
     }
 
