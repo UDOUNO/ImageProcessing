@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -47,8 +48,7 @@ class ImageFactory : AppCompatActivity() {
         val imageDemo: ImageView = findViewById(R.id.image_demo)
         var mainImage = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
         imageDemo.setImageBitmap(mainImage)
-        var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-        var temp2Image = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+        var tempImage = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
 
         val redFilter = findViewById(R.id.red_filter) as ImageButton
         redFilter.setOnClickListener {
@@ -56,8 +56,8 @@ class ImageFactory : AppCompatActivity() {
             sliderGaus.visibility = View.INVISIBLE
             val slider = findViewById(R.id.seekBar) as SeekBar
             slider.visibility = View.INVISIBLE
-            bitmap = ColorFilters.redColor(mainImage)
-            imageDemo.setImageBitmap(bitmap)
+            tempImage = ColorFilters.redColor(mainImage)
+            imageDemo.setImageBitmap(tempImage)
         }
 
         val blueFilter = findViewById(R.id.blue_filter) as ImageButton
@@ -66,8 +66,8 @@ class ImageFactory : AppCompatActivity() {
             sliderGaus.visibility = View.INVISIBLE
             val slider = findViewById(R.id.seekBar) as SeekBar
             slider.visibility = View.INVISIBLE
-            bitmap = ColorFilters.blueColor(mainImage)
-            imageDemo.setImageBitmap(bitmap)
+            tempImage = ColorFilters.blueColor(mainImage)
+            imageDemo.setImageBitmap(tempImage)
         }
 
         val greenFilter = findViewById(R.id.green_filter) as ImageButton
@@ -76,8 +76,8 @@ class ImageFactory : AppCompatActivity() {
             sliderGaus.visibility = View.INVISIBLE
             val slider = findViewById(R.id.seekBar) as SeekBar
             slider.visibility = View.INVISIBLE
-            bitmap = ColorFilters.greenColor(mainImage)
-            imageDemo.setImageBitmap(bitmap)
+            tempImage = ColorFilters.greenColor(mainImage)
+            imageDemo.setImageBitmap(tempImage)
         }
 
         val grayFilter = findViewById(R.id.gray_filter) as ImageButton
@@ -86,8 +86,8 @@ class ImageFactory : AppCompatActivity() {
             slider.visibility = View.INVISIBLE
             val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
             sliderGaus.visibility = View.INVISIBLE
-            bitmap = ColorFilters.grayColor(mainImage)
-            imageDemo.setImageBitmap(bitmap)
+            tempImage = ColorFilters.grayColor(mainImage)
+            imageDemo.setImageBitmap(tempImage)
         }
 
         val cancelChanges = findViewById(R.id.cancel_changes) as ImageButton
@@ -101,20 +101,19 @@ class ImageFactory : AppCompatActivity() {
 
         val blackWhiteFilter = findViewById(R.id.black_white_filter) as ImageButton
         blackWhiteFilter.setOnClickListener {
-            bitmap = ColorFilters.blackWhiteColor(mainImage)
-            imageDemo.setImageBitmap(bitmap)
+            tempImage = ColorFilters.blackWhiteColor(mainImage)
+            imageDemo.setImageBitmap(tempImage)
         }
 
         val saveImage = findViewById(R.id.save_changes) as ImageButton
         saveImage.setOnClickListener {
-            saveBitmap(bitmap)
+            saveBitmap(mainImage)
             val mainActivity = Intent(this, MainActivity::class.java)
             startActivity(mainActivity)
         }
 
         val contrastFilter = findViewById(R.id.contrast) as ImageButton
         contrastFilter.setOnClickListener {
-            var tempImage = bitmap
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.VISIBLE
             val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
@@ -126,9 +125,8 @@ class ImageFactory : AppCompatActivity() {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.VISIBLE
                     mTextView.setText(sliderContrast.getProgress().toString());
-                    bitmap = AlgoFilters.contrast(tempImage, progress)
-                    mainImage = AlgoFilters.contrast(temp2Image, progress)
-                    imageDemo.setImageBitmap(bitmap)
+                    tempImage = AlgoFilters.contrast(mainImage, progress)
+                    imageDemo.setImageBitmap(tempImage)
 
                 }
 
@@ -169,8 +167,8 @@ class ImageFactory : AppCompatActivity() {
                     if (sliderGaus.progress % 2 == 0) {
                         sliderGaus.progress += 1
                     }
-                    bitmap = AlgoFilters.gaussFilter(mainImage, sliderGaus.progress)
-                    imageDemo.setImageBitmap(bitmap)
+                    tempImage = AlgoFilters.gaussFilter(mainImage, sliderGaus.progress)
+                    imageDemo.setImageBitmap(tempImage)
                 }
             })
         }
@@ -181,8 +179,8 @@ class ImageFactory : AppCompatActivity() {
             slider.visibility = View.INVISIBLE
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.INVISIBLE
-            mainImage = imageDemo.drawToBitmap()
-
+            mainImage = Bitmap.createBitmap(tempImage)
+            Log.e("","Filter Applied")
         }
 
         val sharpnessFilter = findViewById(R.id.sharpness) as ImageButton
@@ -191,7 +189,6 @@ class ImageFactory : AppCompatActivity() {
             slider.visibility = View.INVISIBLE
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.INVISIBLE
-            var tempImage = bitmap
             val sliderSharpness = findViewById(R.id.seek_bar_gaus) as SeekBar
             sliderSharpness.visibility = View.VISIBLE
             sliderSharpness.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -205,8 +202,8 @@ class ImageFactory : AppCompatActivity() {
                     if (sliderSharpness.progress % 2 == 0) {
                         sliderSharpness.progress += 1
                     }
-                    bitmap = AlgoFilters.unSharpMask(tempImage, sliderSharpness.progress)
-                    imageDemo.setImageBitmap(bitmap)
+                    tempImage = AlgoFilters.unSharpMask(mainImage, sliderSharpness.progress)
+                    imageDemo.setImageBitmap(tempImage)
                 }
             })
         }
@@ -224,7 +221,6 @@ class ImageFactory : AppCompatActivity() {
         } else {
             images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         }
-1
         var contentValues = ContentValues()
 
         contentValues.put(

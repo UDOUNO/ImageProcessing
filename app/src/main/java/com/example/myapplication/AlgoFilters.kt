@@ -205,4 +205,66 @@ object AlgoFilters {
     fun mozaic(image: Bitmap): Bitmap {
         return image
     }
+
+    fun imageResize(image: Bitmap, koeff: Double): Bitmap {
+        if(koeff > 1){
+            return enlargeImage(image,koeff);
+        }
+        else{
+            return image;
+        }
+    }
+
+    fun applyBilinear(image: Bitmap, koeff: Double): Bitmap {
+        val result = Bitmap.createBitmap(
+            Math.round(image.width * koeff).toInt(),
+            Math.round(image.height * koeff).toInt(),
+            Bitmap.Config.ARGB_8888
+        )
+
+        var alpha: Double
+        var red: Double
+        var green: Double
+        var blue: Double
+        for (j in 0..<result.height) {
+            for (i in 0..<result.width) {
+                val x = (i / koeff)
+                val y = (j / koeff)
+
+                val x1 = x.toInt()
+                val x2 = minOf(x1 + 1, image.width - 1)
+
+                val y1 = y.toInt()
+                val y2 = minOf(y1 + 1, image.height - 1)
+
+                val pix1 = image.getPixel(x1, y1)
+                val pix2 = image.getPixel(x2, y1)
+                val pix3 = image.getPixel(x1, y2)
+                val pix4 = image.getPixel(x2, y2)
+
+                val kx = x - x1
+                val ky = y - y1
+
+                alpha = (Color.alpha(pix1) * (1 - kx) + Color.alpha(pix2) * kx) * (1 - ky) +
+                        (Color.alpha(pix3) * (1 - kx) + Color.alpha(pix4) * kx) * (ky)
+                red = (Color.red(pix1) * (1 - kx) + Color.red(pix2) * kx) * (1 - ky) +
+                        (Color.red(pix3) * (1 - kx) + Color.red(pix4) * kx) * (ky)
+                green = (Color.green(pix1) * (1 - kx) + Color.green(pix2) * kx) * (1 - ky) +
+                        (Color.green(pix3) * (1 - kx) + Color.green(pix4) * kx) * (ky)
+                blue = (Color.blue(pix1) * (1 - kx) + Color.blue(pix2) * kx) * (1 - ky) +
+                        (Color.blue(pix3) * (1 - kx) + Color.blue(pix4) * kx) * (ky)
+
+                val newPixel: Int =
+                    Color.argb(alpha.toInt(), red.toInt(), green.toInt(), blue.toInt())
+
+
+                result.setPixel(i, j, newPixel)
+            }
+        }
+        return result
+    }
+
+    fun enlargeImage(image: Bitmap, koeff: Double): Bitmap {
+        return applyBilinear(image, koeff);
+    }
 }
