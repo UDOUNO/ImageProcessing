@@ -132,6 +132,7 @@ object AlgoFilters {
         for(i in 0..<image.height)
         {
             for(j in 0..<image.width){
+
                 var origPix = image.getPixel(j,i)
                 var blurPix = blurImage.getPixel(j,i)
                 var pixRed = origPix.red-blurPix.red+origPix.red

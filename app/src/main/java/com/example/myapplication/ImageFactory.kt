@@ -25,13 +25,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.drawToBitmap
 import org.opencv.android.OpenCVLoader
 import org.opencv.core.Core
+import java.io.File
+import java.io.FileOutputStream
 import java.util.Objects
 
 class ImageFactory : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+        OpenCVLoader.initLocal();
         setContentView(R.layout.activity_image_factory)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -52,6 +54,19 @@ class ImageFactory : AppCompatActivity() {
         var mainImage = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
         imageDemo.setImageBitmap(mainImage)
         var tempImage = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+
+        val inputStream = resources.openRawResource(R.raw.lbpcascade_frontalface);
+        val weightsDir = applicationContext.getDir("cascade", Context.MODE_PRIVATE)
+        val weightsFile = File(weightsDir, "haarcascade_frontalface_alt_tree.xml");
+        val outputStream = FileOutputStream(weightsFile);
+
+        val buffer = ByteArray(4096);
+        var bytesRead: Int
+        while (inputStream.read(buffer).also { bytesRead = it } != -1){
+            outputStream.write(buffer,0,bytesRead)
+        }
+        inputStream.close()
+        outputStream.close()
 
         val redFilter = findViewById(R.id.red_filter) as ImageButton
         redFilter.setOnClickListener {
@@ -221,12 +236,12 @@ class ImageFactory : AppCompatActivity() {
         }
 
         val faceDetection = findViewById(R.id.find_face) as ImageButton
-        faceDetection.setOnClickListener{
+        faceDetection.setOnClickListener {
             val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
             slider.visibility = View.INVISIBLE
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.INVISIBLE
-            tempImage = FaceRecognition.drawRectangles(mainImage);
+            tempImage = FaceRecognition.drawRectangles(mainImage,weightsFile);
             imageDemo.setImageBitmap(tempImage);
         }
     }
