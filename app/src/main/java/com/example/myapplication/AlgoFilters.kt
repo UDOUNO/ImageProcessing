@@ -23,6 +23,8 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.exp
 import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 
@@ -97,7 +99,7 @@ object AlgoFilters {
                 var sumColorRed: Double = 0.0
                 var sumColorGreen: Double = 0.0
                 var sumColorBlue: Double = 0.0
-                var sumColorAlpha:Double = 0.0
+                var sumColorAlpha: Double = 0.0
                 for (kY in -border1..border1) {
                     for (kX in -border1..border1) {
 
@@ -114,7 +116,10 @@ object AlgoFilters {
                     x - floor((kernelSize / 2).toDouble()).toInt(),
                     y - floor((kernelSize / 2).toDouble()).toInt(),
                     Color.argb(
-                        sumColorAlpha.toInt(), sumColorRed.toInt(), sumColorGreen.toInt(), sumColorBlue.toInt()
+                        sumColorAlpha.toInt(),
+                        sumColorRed.toInt(),
+                        sumColorGreen.toInt(),
+                        sumColorBlue.toInt()
                     )
                 )
             }
@@ -123,44 +128,22 @@ object AlgoFilters {
         return result
     }
 
-    fun luminanceAsPercent(color:Int): Double {
-        return (0.2126*color.red+0.7152*color.green+0.0722*color.blue)
-    }
-    fun unSharpMask(image:Bitmap, kernelSize:Int): Bitmap {
-        var blurImage = gaussFilter(image,kernelSize)
-        var sharpImage = Bitmap.createBitmap(image.width,image.height,Bitmap.Config.ARGB_8888)
-        for(i in 0..<image.height)
-        {
-            for(j in 0..<image.width){
-
-                var origPix = image.getPixel(j,i)
-                var blurPix = blurImage.getPixel(j,i)
-                var pixRed = origPix.red-blurPix.red+origPix.red
-                var pixGreen = origPix.green-blurPix.green+origPix.green
-                var pixBlue = origPix.blue-blurPix.blue+origPix.blue
-                if(pixRed > 255){
-                    pixRed = 255
-                }
-                if(pixRed < 0){
-                    pixRed = 0
-                }
-                if(pixGreen > 255){
-                    pixGreen = 255
-                }
-                if(pixGreen < 0){
-                    pixGreen = 0
-                }
-                if(pixBlue > 255){
-                    pixBlue = 255
-                }
-                if(pixBlue < 0){
-                    pixBlue = 0
-                }
-                sharpImage.setPixel(j,i,Color.argb(blurPix.alpha,pixRed,pixGreen ,pixBlue))
+    fun unSharpMask(image: Bitmap, kernelSize: Int): Bitmap {
+        var blurImage = gaussFilter(image, kernelSize)
+        var sharpImage = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
+        for (i in 0..<image.height) {
+            for (j in 0..<image.width) {
+                var origPix = image.getPixel(j, i)
+                var blurPix = blurImage.getPixel(j, i)
+                var pixRed = max(min(origPix.red - blurPix.red + origPix.red, 255), 0)
+                var pixGreen = max(min(origPix.green - blurPix.green + origPix.green, 255), 0)
+                var pixBlue = max(min(origPix.blue - blurPix.blue + origPix.blue, 255), 0)
+                sharpImage.setPixel(j, i, Color.argb(blurPix.alpha, pixRed, pixGreen, pixBlue))
             }
         }
         return sharpImage
     }
+
     fun gaussFilter(image: Bitmap, kernelSize: Int): Bitmap {
         return applyKernelToBitmap(image, makeGausKernel(kernelSize));
     }
@@ -173,27 +156,9 @@ object AlgoFilters {
             pixels, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight()
         )
         for (pix in 0..pixels.size - 1) {
-            var newR = ((pixels[pix].red / 255.0 - 0.5) * value + 0.5) * 255.0
-            var newB = ((pixels[pix].blue / 255.0 - 0.5) * value + 0.5) * 255.0
-            var newG = ((pixels[pix].green / 255.0 - 0.5) * value + 0.5) * 255.0
-            if (newR < 0) {
-                newR = 0.0
-            }
-            if (newB < 0) {
-                newB = 0.0
-            }
-            if (newG < 0) {
-                newG = 0.0
-            }
-            if (newR > 255) {
-                newR = 255.0
-            }
-            if (newB > 255) {
-                newB = 255.0
-            }
-            if (newG > 255) {
-                newG = 255.0
-            }
+            var newR = max(min(((pixels[pix].red / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
+            var newB = max(min(((pixels[pix].blue / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
+            var newG = max(min(((pixels[pix].green / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
             var newPix = Color.argb(pixels[pix].alpha, newR.toInt(), newG.toInt(), newB.toInt())
             pixels[pix] = newPix
         }
@@ -208,11 +173,10 @@ object AlgoFilters {
     }
 
     fun imageResize(image: Bitmap, koeff: Double): Bitmap {
-        if(koeff > 1){
-            return enlargeImage(image,koeff);
-        }
-        else{
-            return image;
+        if (koeff > 1) {
+            return enlargeImage(image, koeff);
+        } else {
+            return reduceImage(image, koeff);
         }
     }
 
@@ -246,14 +210,22 @@ object AlgoFilters {
                 val kx = x - x1
                 val ky = y - y1
 
-                alpha = (Color.alpha(pix1) * (1 - kx) + Color.alpha(pix2) * kx) * (1 - ky) +
-                        (Color.alpha(pix3) * (1 - kx) + Color.alpha(pix4) * kx) * (ky)
-                red = (Color.red(pix1) * (1 - kx) + Color.red(pix2) * kx) * (1 - ky) +
-                        (Color.red(pix3) * (1 - kx) + Color.red(pix4) * kx) * (ky)
-                green = (Color.green(pix1) * (1 - kx) + Color.green(pix2) * kx) * (1 - ky) +
-                        (Color.green(pix3) * (1 - kx) + Color.green(pix4) * kx) * (ky)
-                blue = (Color.blue(pix1) * (1 - kx) + Color.blue(pix2) * kx) * (1 - ky) +
-                        (Color.blue(pix3) * (1 - kx) + Color.blue(pix4) * kx) * (ky)
+                alpha =
+                    (Color.alpha(pix1) * (1 - kx) + Color.alpha(pix2) * kx) * (1 - ky) + (Color.alpha(
+                        pix3
+                    ) * (1 - kx) + Color.alpha(pix4) * kx) * (ky)
+                red =
+                    (Color.red(pix1) * (1 - kx) + Color.red(pix2) * kx) * (1 - ky) + (Color.red(pix3) * (1 - kx) + Color.red(
+                        pix4
+                    ) * kx) * (ky)
+                green =
+                    (Color.green(pix1) * (1 - kx) + Color.green(pix2) * kx) * (1 - ky) + (Color.green(
+                        pix3
+                    ) * (1 - kx) + Color.green(pix4) * kx) * (ky)
+                blue =
+                    (Color.blue(pix1) * (1 - kx) + Color.blue(pix2) * kx) * (1 - ky) + (Color.blue(
+                        pix3
+                    ) * (1 - kx) + Color.blue(pix4) * kx) * (ky)
 
                 val newPixel: Int =
                     Color.argb(alpha.toInt(), red.toInt(), green.toInt(), blue.toInt())
@@ -265,7 +237,52 @@ object AlgoFilters {
         return result
     }
 
+    fun applyReduction(image: Bitmap, koeff: Double): Bitmap {
+        val firstMip = image.copy(Bitmap.Config.ARGB_8888, true)
+        val c: Double = 1 - ((1 - koeff) / 2)
+        val secondMip = applyBilinear(firstMip, c)
+        val firstResultBitmap = applyBilinear(firstMip, koeff)
+        val secondResultBitmap = applyBilinear(secondMip, (koeff / c))
+        val newBitmap = Bitmap.createBitmap(
+            Math.round(firstMip.width * koeff).toInt(),
+            Math.round(firstMip.height * koeff).toInt(),
+            firstMip.config
+        )
+
+
+        var alpha: Int
+        var red: Int
+        var green: Int
+        var blue: Int
+        for (j in 0 until newBitmap.height - 1) {
+            for (i in 0 until newBitmap.width - 1) {
+                if (i < secondResultBitmap.width || j < secondResultBitmap.height) {
+                    val pix1 = firstResultBitmap.getPixel(i, j)
+                    val pix2 = secondResultBitmap.getPixel(i, j)
+
+                    alpha = (Color.alpha(pix1) + Color.alpha(pix2)) / 2
+                    red = (Color.red(pix1) + Color.red(pix2)) / 2
+                    green = (Color.green(pix1) + Color.green(pix2)) / 2
+                    blue = (Color.blue(pix1) + Color.blue(pix2)) / 2
+
+                    val newPixel: Int = Color.argb(alpha, red, green, blue)
+
+
+                    newBitmap.setPixel(i, j, newPixel)
+                } else {
+                    newBitmap.setPixel(i, j, firstResultBitmap.getPixel(i, j))
+                }
+            }
+        }
+
+        return newBitmap
+    }
+
     fun enlargeImage(image: Bitmap, koeff: Double): Bitmap {
         return applyBilinear(image, koeff);
+    }
+
+    fun reduceImage(image: Bitmap, koeff: Double): Bitmap {
+        return applyReduction(image, koeff)
     }
 }

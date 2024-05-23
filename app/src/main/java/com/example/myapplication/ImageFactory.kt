@@ -231,7 +231,7 @@ class ImageFactory : AppCompatActivity() {
             slider.visibility = View.INVISIBLE
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.INVISIBLE
-            tempImage = AlgoFilters.imageResize(mainImage, 2.0)
+            tempImage = AlgoFilters.imageResize(mainImage, 0.5)
             imageDemo.setImageBitmap(tempImage)
         }
 
