@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@null">
+    android:layout_height="match_parent">
 
     <ImageButton
         android:id="@+id/apply_filter"
@@ -33,15 +32,4 @@
         app:srcCompat="@drawable/cross"
         tools:srcCompat="@drawable/cross" />
 
-    <SeekBar
-        android:max="15"
-        android:progress="1"
-        android:id="@+id/gaus"
-        android:layout_width="321dp"
-        android:layout_height="29dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.025" />
 </androidx.constraintlayout.widget.ConstraintLayout>

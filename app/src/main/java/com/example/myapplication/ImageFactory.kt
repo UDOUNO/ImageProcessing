@@ -24,8 +24,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import org.opencv.android.OpenCVLoader
 import java.io.File
 import java.io.FileOutputStream
@@ -70,13 +73,28 @@ class ImageFactory : AppCompatActivity() {
         }
         inputStream.close()
         outputStream.close()
+
         lifecycleScope.async { prepare(mainImage) };
+
         val redFilter = findViewById(R.id.red_filter) as ImageButton
         redFilter.setOnClickListener {
-            val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
-            sliderGaus.visibility = View.INVISIBLE
-            val slider = findViewById(R.id.seekBar) as SeekBar
-            slider.visibility = View.INVISIBLE
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_contrast, null)
+            val dismissChange = view.findViewById(R.id.cancel_changes) as ImageButton
+            val applyChange = view.findViewById(R.id.apply_filter) as ImageButton
+
+            dismissChange.setOnClickListener {
+                dialog.dismiss()
+                imageDemo.setImageBitmap(mainImage)
+            }
+            applyChange.setOnClickListener {
+                dialog.dismiss()
+                mainImage = Bitmap.createBitmap(tempImage)
+                Log.e("", "Filter Applied")
+            }
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.show()
             lifecycleScope.async {
                 tempImage = ColorFilters.redColor(mainImage)
                 imageDemo.setImageBitmap(tempImage)
@@ -85,10 +103,23 @@ class ImageFactory : AppCompatActivity() {
 
         val blueFilter = findViewById(R.id.blue_filter) as ImageButton
         blueFilter.setOnClickListener {
-            val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
-            sliderGaus.visibility = View.INVISIBLE
-            val slider = findViewById(R.id.seekBar) as SeekBar
-            slider.visibility = View.INVISIBLE
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_contrast, null)
+            val dismissChange = view.findViewById(R.id.cancel_changes) as ImageButton
+            val applyChange = view.findViewById(R.id.apply_filter) as ImageButton
+
+            dismissChange.setOnClickListener {
+                dialog.dismiss()
+                imageDemo.setImageBitmap(mainImage)
+            }
+            applyChange.setOnClickListener {
+                dialog.dismiss()
+                mainImage = Bitmap.createBitmap(tempImage)
+                Log.e("", "Filter Applied")
+            }
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.show()
             lifecycleScope.async {
                 tempImage = ColorFilters.blueColor(mainImage)
                 imageDemo.setImageBitmap(tempImage)
@@ -97,10 +128,23 @@ class ImageFactory : AppCompatActivity() {
 
         val greenFilter = findViewById(R.id.green_filter) as ImageButton
         greenFilter.setOnClickListener {
-            val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
-            sliderGaus.visibility = View.INVISIBLE
-            val slider = findViewById(R.id.seekBar) as SeekBar
-            slider.visibility = View.INVISIBLE
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_contrast, null)
+            val dismissChange = view.findViewById(R.id.cancel_changes) as ImageButton
+            val applyChange = view.findViewById(R.id.apply_filter) as ImageButton
+
+            dismissChange.setOnClickListener {
+                dialog.dismiss()
+                imageDemo.setImageBitmap(mainImage)
+            }
+            applyChange.setOnClickListener {
+                dialog.dismiss()
+                mainImage = Bitmap.createBitmap(tempImage)
+                Log.e("", "Filter Applied")
+            }
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.show()
             lifecycleScope.async {
                 tempImage = ColorFilters.greenColor(mainImage)
                 imageDemo.setImageBitmap(tempImage)
@@ -109,10 +153,23 @@ class ImageFactory : AppCompatActivity() {
 
         val grayFilter = findViewById(R.id.gray_filter) as ImageButton
         grayFilter.setOnClickListener {
-            val slider = findViewById(R.id.seekBar) as SeekBar
-            slider.visibility = View.INVISIBLE
-            val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
-            sliderGaus.visibility = View.INVISIBLE
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_contrast, null)
+            val dismissChange = view.findViewById(R.id.cancel_changes) as ImageButton
+            val applyChange = view.findViewById(R.id.apply_filter) as ImageButton
+
+            dismissChange.setOnClickListener {
+                dialog.dismiss()
+                imageDemo.setImageBitmap(mainImage)
+            }
+            applyChange.setOnClickListener {
+                dialog.dismiss()
+                mainImage = Bitmap.createBitmap(tempImage)
+                Log.e("", "Filter Applied")
+            }
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.show()
             lifecycleScope.async {
                 tempImage = ColorFilters.grayColor(mainImage)
                 imageDemo.setImageBitmap(tempImage)
@@ -130,6 +187,23 @@ class ImageFactory : AppCompatActivity() {
 
         val blackWhiteFilter = findViewById(R.id.black_white_filter) as ImageButton
         blackWhiteFilter.setOnClickListener {
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_contrast, null)
+            val dismissChange = view.findViewById(R.id.cancel_changes) as ImageButton
+            val applyChange = view.findViewById(R.id.apply_filter) as ImageButton
+
+            dismissChange.setOnClickListener {
+                dialog.dismiss()
+                imageDemo.setImageBitmap(mainImage)
+            }
+            applyChange.setOnClickListener {
+                dialog.dismiss()
+                mainImage = Bitmap.createBitmap(tempImage)
+                Log.e("", "Filter Applied")
+            }
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.show()
             lifecycleScope.async {
                 tempImage = ColorFilters.blackWhiteColor(mainImage)
                 imageDemo.setImageBitmap(tempImage)
@@ -160,7 +234,6 @@ class ImageFactory : AppCompatActivity() {
                 mainImage = Bitmap.createBitmap(tempImage)
                 Log.e("", "Filter Applied")
             }
-
             dialog.setCancelable(false)
             dialog.setContentView(view)
             dialog.show()
@@ -319,15 +392,14 @@ class ImageFactory : AppCompatActivity() {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.VISIBLE
                     mTextView.setText(sliderRes.getProgress().toString());
-                    var progres =0
-                    if(sliderRes.progress <5){
+                    var progres = 0
+                    if (sliderRes.progress < 5) {
                         progres = 5
-                    }
-                    else{
+                    } else {
                         progres = sliderRes.progress
                     }
                     lifecycleScope.async {
-                        tempImage = AlgoFilters.imageResize(mainImage, progres.toDouble()/10)
+                        tempImage = AlgoFilters.imageResize(mainImage, progres.toDouble() / 10)
                         imageDemo.setImageBitmap(tempImage)
                     }
                 }
@@ -336,6 +408,7 @@ class ImageFactory : AppCompatActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.INVISIBLE
+
                 }
             })
         }
@@ -348,6 +421,8 @@ class ImageFactory : AppCompatActivity() {
 //            sliderContrast.visibility = View.INVISIBLE
 //            lifecycleScope.async {
 //                tempImage = AlgoFilters.imageResize(mainImage, 0.5)
+//                mainImage = tempImage
+//                Log.e("resize","IDK")
 //                imageDemo.setImageBitmap(tempImage)
 //            }
 //        }
@@ -363,13 +438,12 @@ class ImageFactory : AppCompatActivity() {
                 imageDemo.setImageBitmap(tempImage);
             }
         }
-        imageDemo.setOnTouchListener(View.OnTouchListener { _: View, m: MotionEvent ->
-            retouch.onTouchEvent(m)
-        })
+//        imageDemo.setOnTouchListener(View.OnTouchListener { _: View, m: MotionEvent ->
+//            retouch.onTouchEvent(m)
+//        })
     }
 
     private suspend fun prepare(image: Bitmap) {
-        //val imageDemo = AlgoFilters.imageResize(image,0.5)
         val gauss = findViewById(R.id.gaussian_filter) as ImageButton
         val unsharpMask = findViewById(R.id.sharpness) as ImageButton
         val con = findViewById(R.id.contrast) as ImageButton
@@ -386,6 +460,11 @@ class ImageFactory : AppCompatActivity() {
         green.setImageBitmap(ColorFilters.greenColor(image))
         blue.setImageBitmap(ColorFilters.blueColor(image))
         red.setImageBitmap(ColorFilters.redColor(image))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleScope.cancel("exit of activity")
     }
 
     private fun saveBitmap(bitmap: Bitmap) {
