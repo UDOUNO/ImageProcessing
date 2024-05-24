@@ -39,7 +39,7 @@ class ImageFactory : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        OpenCVLoader.initLocal();
+        OpenCVLoader.initLocal()
         setContentView(R.layout.activity_image_factory)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -60,21 +60,19 @@ class ImageFactory : AppCompatActivity() {
         imageDemo.setImageBitmap(mainImage)
         var tempImage = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
 
-        val inputStream = resources.openRawResource(R.raw.lbpcascade_frontalface);
+        val inputStream = resources.openRawResource(R.raw.lbpcascade_frontalface)
         val weightsDir = applicationContext.getDir("cascade", Context.MODE_PRIVATE)
-        val weightsFile = File(weightsDir, "haarcascade_frontalface_alt_tree.xml");
-        val outputStream = FileOutputStream(weightsFile);
-        val buffer = ByteArray(4096);
+        val weightsFile = File(weightsDir, "haarcascade_frontalface_alt_tree.xml")
+        val outputStream = FileOutputStream(weightsFile)
+        val buffer = ByteArray(4096)
         var bytesRead: Int
-
-        val retouch: Retouch = Retouch(this.applicationContext, mainImage, imageDemo)
         while (inputStream.read(buffer).also { bytesRead = it } != -1) {
             outputStream.write(buffer, 0, bytesRead)
         }
         inputStream.close()
         outputStream.close()
 
-        lifecycleScope.async { prepare(mainImage) };
+        lifecycleScope.async { prepare(mainImage) }
 
         val redFilter = findViewById(R.id.red_filter) as ImageButton
         redFilter.setOnClickListener {
@@ -243,7 +241,7 @@ class ImageFactory : AppCompatActivity() {
                 ) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.VISIBLE
-                    mTextView.setText(sliderContrast.getProgress().toString());
+                    mTextView.setText(sliderContrast.getProgress().toString())
                     lifecycleScope.async {
                         tempImage = AlgoFilters.contrast(mainImage, progress)
                         imageDemo.setImageBitmap(tempImage)
@@ -285,7 +283,7 @@ class ImageFactory : AppCompatActivity() {
                 ) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.VISIBLE
-                    mTextView.setText(sliderGaus.getProgress().toString());
+                    mTextView.setText(sliderGaus.getProgress().toString())
                     lifecycleScope.async {
                         tempImage = AlgoFilters.gaussFilter(mainImage, progress)
                         imageDemo.setImageBitmap(tempImage)
@@ -330,7 +328,7 @@ class ImageFactory : AppCompatActivity() {
                 ) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.VISIBLE
-                    mTextView.setText(sliderGaus.getProgress().toString());
+                    mTextView.setText(sliderGaus.getProgress().toString())
                     lifecycleScope.async {
                         tempImage = AlgoFilters.unSharpMask(mainImage, progress)
                         imageDemo.setImageBitmap(tempImage)
@@ -391,8 +389,8 @@ class ImageFactory : AppCompatActivity() {
                 ) {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.VISIBLE
-                    mTextView.setText(sliderRes.getProgress().toString());
-                    var progres = 0
+                    mTextView.setText(sliderRes.getProgress().toString())
+                    var progres:Int
                     if (sliderRes.progress < 5) {
                         progres = 5
                     } else {
@@ -413,34 +411,52 @@ class ImageFactory : AppCompatActivity() {
             })
         }
 
-//        val imageReSize = findViewById(R.id.image_resize) as ImageButton
-//        imageReSize.setOnClickListener {
-//            val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
-//            slider.visibility = View.INVISIBLE
-//            val sliderContrast = findViewById(R.id.seekBar) as SeekBar
-//            sliderContrast.visibility = View.INVISIBLE
-//            lifecycleScope.async {
-//                tempImage = AlgoFilters.imageResize(mainImage, 0.5)
-//                mainImage = tempImage
-//                Log.e("resize","IDK")
-//                imageDemo.setImageBitmap(tempImage)
-//            }
-//        }
-
         val faceDetection = findViewById(R.id.find_face) as ImageButton
         faceDetection.setOnClickListener {
-            val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
-            slider.visibility = View.INVISIBLE
-            val sliderContrast = findViewById(R.id.seekBar) as SeekBar
-            sliderContrast.visibility = View.INVISIBLE
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_opencv, null)
+            val dismissChange = view.findViewById(R.id.cancel_changes) as ImageButton
+            val applyChange = view.findViewById(R.id.apply_filter) as ImageButton
+            val gaus = view.findViewById(R.id.button_gauss) as ImageButton
+            val cont = view.findViewById(R.id.button_contrast) as ImageButton
+            val unsharp = view.findViewById(R.id.button_unsharp) as ImageButton
+
+            gaus.setOnClickListener {
+                lifecycleScope.async {
+                    tempImage = FaceRecognition.faceBlur(mainImage, weightsFile, 3)
+                    imageDemo.setImageBitmap(tempImage)
+                }
+            }
+            cont.setOnClickListener{
+                lifecycleScope.async {
+                    tempImage = FaceRecognition.faceContrast(mainImage,weightsFile,50)
+                    imageDemo.setImageBitmap(tempImage)
+                }
+            }
+            unsharp.setOnClickListener {
+                lifecycleScope.async {
+                    tempImage = AlgoFilters.unSharpMask(mainImage,3)
+                    imageDemo.setImageBitmap(tempImage)
+                }
+            }
+
+            dismissChange.setOnClickListener {
+                dialog.dismiss()
+                imageDemo.setImageBitmap(mainImage)
+            }
+            applyChange.setOnClickListener {
+                dialog.dismiss()
+                mainImage = Bitmap.createBitmap(tempImage)
+                Log.e("", "Filter Applied")
+            }
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.show()
             lifecycleScope.async {
-                tempImage = FaceRecognition.drawRectangles(mainImage, weightsFile);
-                imageDemo.setImageBitmap(tempImage);
+                tempImage = FaceRecognition.drawRectangles(mainImage, weightsFile)
+                imageDemo.setImageBitmap(tempImage)
             }
         }
-//        imageDemo.setOnTouchListener(View.OnTouchListener { _: View, m: MotionEvent ->
-//            retouch.onTouchEvent(m)
-//        })
     }
 
     private suspend fun prepare(image: Bitmap) {
@@ -471,21 +487,21 @@ class ImageFactory : AppCompatActivity() {
         val images: Uri
         val contentResolver: ContentResolver = contentResolver
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            images = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        images = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
         } else {
-            images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         }
-        var contentValues = ContentValues()
+        val contentValues = ContentValues()
 
         contentValues.put(
             MediaStore.Images.Media.DISPLAY_NAME, System.currentTimeMillis().toString() + ".jpg"
         )
         contentValues.put(MediaStore.Images.Media.MIME_TYPE, "images/*")
-        var uri: Uri? = contentResolver.insert(images, contentValues)
+        val uri: Uri? = contentResolver.insert(images, contentValues)
 
         try {
-            var outputStream =
+            val outputStream =
                 Objects.requireNonNull(uri)?.let { contentResolver.openOutputStream(it) }
             if (outputStream != null) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)

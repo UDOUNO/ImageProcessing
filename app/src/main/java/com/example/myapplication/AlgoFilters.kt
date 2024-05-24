@@ -1,27 +1,22 @@
 package com.example.myapplication
 
-import android.R.attr.bitmap
 import android.R.attr.height
 import android.R.attr.width
-import android.R.color
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
-import androidx.core.graphics.BitmapCompat
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlin.math.PI
-import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.exp
 import kotlin.math.floor
@@ -32,7 +27,7 @@ import kotlin.math.sqrt
 
 object AlgoFilters {
     private fun extrapolate(image: Bitmap, kernelSize: Int): Bitmap {
-        var result = createBitmap(
+        val result = createBitmap(
             (image.width + (floor((kernelSize / 2).toDouble()) * 2)).toInt(),
             (image.height + (floor((kernelSize / 2).toDouble()) * 2)).toInt(),
             Bitmap.Config.ARGB_8888
@@ -41,7 +36,7 @@ object AlgoFilters {
         val paint = Paint()
         paint.setColor(Color.argb(255, 255, 255, 255))
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
-        var pixels = IntArray(image.width * image.height)
+        val pixels = IntArray(image.width * image.height)
         image.getPixels(pixels, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight())
         result.setPixels(
             pixels,
@@ -56,8 +51,8 @@ object AlgoFilters {
     }
 
     private fun gausValue(x: Double): Double {
-        var sigma: Double = 3.0
-        var mu: Double = 0.0
+        val sigma: Double = 3.0
+        val mu: Double = 0.0
         return 1.0f / (sqrt(2 * PI) * sigma) * exp(-((x - mu) * (x - mu)) / (2 * sigma * sigma))
     }
 
@@ -65,7 +60,7 @@ object AlgoFilters {
         var weights: Array<Double> = emptyArray()
         var sum: Double = 0.0
         var gausV: Double = 0.0
-        var halfMask: Int = maskSize / 2
+        val halfMask: Int = maskSize / 2
 
         for (x in -halfMask..halfMask) {
             for (y in -halfMask..halfMask) {
@@ -81,9 +76,9 @@ object AlgoFilters {
     }
 
     suspend fun applyKernelToBitmap(image: Bitmap, weights: Array<Double>): Bitmap {
-        var result: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
+        val result: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
         val kernelSize = sqrt(weights.size.toDouble()).toInt()
-        var tempIm = extrapolate(image, kernelSize)
+        val tempIm = extrapolate(image, kernelSize)
         val width = tempIm.width
         val height = tempIm.height
         val border1: Int = floor((kernelSize / 2).toDouble()).toInt()
@@ -111,7 +106,7 @@ object AlgoFilters {
                             for (kY in -border1..border1) {
                                 for (kX in -border1..border1) {
 
-                                    var maskPos =
+                                    val maskPos =
                                         ((kX + floor((kernelSize / 2).toDouble())) + (kY + floor((kernelSize / 2).toDouble())) * kernelSize).toInt()
 
                                     sumColorRed += (tempIm.getPixel(
@@ -150,15 +145,15 @@ object AlgoFilters {
     }
 
     suspend fun unSharpMask(image: Bitmap, kernelSize: Int): Bitmap {
-        var blurImage = gaussFilter(image, kernelSize)
-        var sharpImage = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
+        val blurImage = gaussFilter(image, kernelSize)
+        val sharpImage = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
         for (i in 0..<image.height) {
             for (j in 0..<image.width) {
-                var origPix = image.getPixel(j, i)
-                var blurPix = blurImage.getPixel(j, i)
-                var pixRed = max(min(origPix.red - blurPix.red + origPix.red, 255), 0)
-                var pixGreen = max(min(origPix.green - blurPix.green + origPix.green, 255), 0)
-                var pixBlue = max(min(origPix.blue - blurPix.blue + origPix.blue, 255), 0)
+                val origPix = image.getPixel(j, i)
+                val blurPix = blurImage.getPixel(j, i)
+                val pixRed = max(min(origPix.red - blurPix.red + origPix.red, 255), 0)
+                val pixGreen = max(min(origPix.green - blurPix.green + origPix.green, 255), 0)
+                val pixBlue = max(min(origPix.blue - blurPix.blue + origPix.blue, 255), 0)
                 sharpImage.setPixel(j, i, Color.argb(blurPix.alpha, pixRed, pixGreen, pixBlue))
             }
         }
@@ -166,7 +161,7 @@ object AlgoFilters {
     }
 
     suspend fun gaussFilter(image: Bitmap, kernelSize: Int): Bitmap {
-        return applyKernelToBitmap(image, makeGausKernel(kernelSize));
+        return applyKernelToBitmap(image, makeGausKernel(kernelSize))
     }
 
     fun contrast(image: Bitmap, Value: Int): Bitmap {
@@ -192,10 +187,10 @@ object AlgoFilters {
     }
 
     suspend fun imageResize(image: Bitmap, koeff: Double): Bitmap {
-        if (koeff > 1) {
-            return enlargeImage(image, koeff);
+        return if (koeff > 1) {
+            enlargeImage(image, koeff)
         } else {
-            return reduceImage(image, koeff);
+            reduceImage(image, koeff)
         }
     }
 
@@ -304,7 +299,7 @@ object AlgoFilters {
     }
 
     suspend fun enlargeImage(image: Bitmap, koeff: Double): Bitmap {
-        return applyBilinear(image, koeff);
+        return applyBilinear(image, koeff)
     }
 
     suspend fun reduceImage(image: Bitmap, koeff: Double): Bitmap {
