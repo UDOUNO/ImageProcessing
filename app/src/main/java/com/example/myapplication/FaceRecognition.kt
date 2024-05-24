@@ -3,7 +3,10 @@ package com.example.myapplication
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.core.graphics.alpha
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.get
+import androidx.core.graphics.red
 import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
@@ -46,5 +49,20 @@ object FaceRecognition {
         }
         Utils.matToBitmap(toProcessImage, result);
         return result;
+    }
+
+    suspend fun faceBlur(image:Bitmap,file:File,kernel:Int):Bitmap{
+        val mat = detectFace(image,file)
+        var result = createBitmap(image.width,image.height,Bitmap.Config.ARGB_8888)
+        result = AlgoFilters.gaussFilter(image,kernel)
+        for(rt in mat.toArray()){
+            for(i in rt.y+rt.height..rt.y){
+                for(j in rt.x..rt.x+rt.width){
+                    val pixRes = image.getPixel(j,i)
+                    result.setPixel(j,i,pixRes)
+                }
+            }
+        }
+        return result
     }
 }

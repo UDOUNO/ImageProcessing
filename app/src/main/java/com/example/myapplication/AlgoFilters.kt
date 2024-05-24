@@ -15,7 +15,9 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlin.math.PI
@@ -78,13 +80,7 @@ object AlgoFilters {
         return weights
     }
 
-    fun makeSharpnessKernel(koeff: Int): Array<Double> {
-        return arrayOf(
-            0.0, -1.0 * koeff, 0.0, -1.0 * koeff, 5.0 * koeff, -1.0 * koeff, 0.0, -1.0 * koeff, 0.0
-        )
-    }
-
-    fun applyKernelToBitmap(image: Bitmap, weights: Array<Double>): Bitmap {
+    suspend fun applyKernelToBitmap(image: Bitmap, weights: Array<Double>): Bitmap {
         var result: Bitmap = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
         val kernelSize = sqrt(weights.size.toDouble()).toInt()
         var tempIm = extrapolate(image, kernelSize)
@@ -93,7 +89,8 @@ object AlgoFilters {
         val border1: Int = floor((kernelSize / 2).toDouble()).toInt()
         val border2: Int = height - floor((kernelSize / 2).toDouble()).toInt()
         val border2B: Int = width - floor((kernelSize / 2).toDouble()).toInt()
-        for (y in border1..<border2) {
+        val numCores = Runtime.getRuntime().availableProcessors()
+        val deferredResults = (0 until numCores).map{core->GlobalScope.async{for (y in border1..<border2) {
             for (x in border1..<border2B) {
 
                 var sumColorRed: Double = 0.0
@@ -123,12 +120,13 @@ object AlgoFilters {
                     )
                 )
             }
-        }
+        }}}
+        deferredResults.forEach{it.await()}
 
         return result
     }
 
-    fun unSharpMask(image: Bitmap, kernelSize: Int): Bitmap {
+    suspend fun unSharpMask(image: Bitmap, kernelSize: Int): Bitmap {
         var blurImage = gaussFilter(image, kernelSize)
         var sharpImage = Bitmap.createBitmap(image.width, image.height, Bitmap.Config.ARGB_8888)
         for (i in 0..<image.height) {
@@ -144,7 +142,7 @@ object AlgoFilters {
         return sharpImage
     }
 
-    fun gaussFilter(image: Bitmap, kernelSize: Int): Bitmap {
+    suspend fun gaussFilter(image: Bitmap, kernelSize: Int): Bitmap {
         return applyKernelToBitmap(image, makeGausKernel(kernelSize));
     }
 
