@@ -13,7 +13,7 @@
         android:layout_width="34dp"
         android:layout_height="32dp"
         android:layout_marginEnd="4dp"
-        android:background="#00FFFFFF"
+        android:background="@null"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/image_demo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,8 @@
         android:id="@+id/go_to_main"
         android:layout_width="33dp"
         android:layout_height="31dp"
-        android:background="#00FFFFFF"
+        android:background="@null"
+        android:scaleType="centerCrop"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/image_demo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,8 +54,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/ic_menu_revert"
-        tools:srcCompat="@android:drawable/ic_menu_revert"
+        app:srcCompat="@drawable/resource_return"
+        tools:srcCompat="@drawable/resource_return"
         tools:visibility="visible" />
 
     <HorizontalScrollView
@@ -75,6 +76,7 @@
             tools:visibility="visible">
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/sharpness"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -82,6 +84,7 @@
                 app:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/gaussian_filter"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -89,6 +92,7 @@
                 app:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/contrast"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -97,6 +101,7 @@
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/black_white_filter"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -105,6 +110,7 @@
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/gray_filter"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -113,6 +119,7 @@
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/green_filter"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -121,6 +128,7 @@
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/blue_filter"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -129,6 +137,7 @@
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/red_filter"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -137,6 +146,7 @@
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
+                android:background="@null"
                 android:id="@+id/find_face"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -149,6 +159,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_weight="1"
+                android:background="@null"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/resize" />
 
@@ -186,6 +197,7 @@
         android:layout_width="37dp"
         android:layout_height="31dp"
         android:scaleType="centerCrop"
+        android:background="@null"
         app:layout_constraintBottom_toTopOf="@+id/image_demo"
         app:layout_constraintEnd_toStartOf="@+id/save_changes"
         app:layout_constraintHorizontal_bias="0.014"
@@ -201,6 +213,7 @@
         android:layout_height="31dp"
         android:layout_marginEnd="2dp"
         android:scaleType="centerCrop"
+        android:background="@null"
         app:layout_constraintBottom_toBottomOf="@+id/image_turn_right"
         app:layout_constraintEnd_toStartOf="@+id/image_turn_right"
         app:layout_constraintStart_toEndOf="@+id/go_to_main"
