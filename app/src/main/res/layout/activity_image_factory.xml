@@ -27,8 +27,10 @@
 
     <ImageView
         android:id="@+id/image_demo"
-        android:layout_width="381dp"
+        android:layout_width="wrap_content"
         android:layout_height="522dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

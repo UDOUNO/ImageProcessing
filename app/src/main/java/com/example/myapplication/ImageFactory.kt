@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import Retouch
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -12,6 +14,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -30,6 +33,7 @@ import java.io.FileOutputStream
 import java.util.Objects
 
 class ImageFactory : AppCompatActivity() {
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -62,6 +66,7 @@ class ImageFactory : AppCompatActivity() {
 
         val buffer = ByteArray(4096);
         var bytesRead: Int
+        val retouch: Retouch = Retouch(this.applicationContext, mainImage, imageDemo)
         while (inputStream.read(buffer).also { bytesRead = it } != -1){
             outputStream.write(buffer,0,bytesRead)
         }
@@ -244,6 +249,9 @@ class ImageFactory : AppCompatActivity() {
             tempImage = FaceRecognition.drawRectangles(mainImage,weightsFile);
             imageDemo.setImageBitmap(tempImage);
         }
+        imageDemo.setOnTouchListener(View.OnTouchListener { _: View, m: MotionEvent ->
+            retouch.onTouchEvent(m)
+        })
     }
 
     private fun saveToTemp() {
