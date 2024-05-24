@@ -26,6 +26,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.drawToBitmap
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.async
 import org.opencv.android.OpenCVLoader
 import org.opencv.core.Core
 import java.io.File
@@ -79,8 +81,8 @@ class ImageFactory : AppCompatActivity() {
             sliderGaus.visibility = View.INVISIBLE
             val slider = findViewById(R.id.seekBar) as SeekBar
             slider.visibility = View.INVISIBLE
-            tempImage = ColorFilters.redColor(mainImage)
-            imageDemo.setImageBitmap(tempImage)
+            lifecycleScope.async{tempImage = ColorFilters.redColor(mainImage)
+                imageDemo.setImageBitmap(tempImage)}
         }
 
         val blueFilter = findViewById(R.id.blue_filter) as ImageButton
@@ -89,8 +91,8 @@ class ImageFactory : AppCompatActivity() {
             sliderGaus.visibility = View.INVISIBLE
             val slider = findViewById(R.id.seekBar) as SeekBar
             slider.visibility = View.INVISIBLE
-            tempImage = ColorFilters.blueColor(mainImage)
-            imageDemo.setImageBitmap(tempImage)
+            lifecycleScope.async{tempImage = ColorFilters.blueColor(mainImage)
+                imageDemo.setImageBitmap(tempImage)}
         }
 
         val greenFilter = findViewById(R.id.green_filter) as ImageButton
@@ -99,8 +101,8 @@ class ImageFactory : AppCompatActivity() {
             sliderGaus.visibility = View.INVISIBLE
             val slider = findViewById(R.id.seekBar) as SeekBar
             slider.visibility = View.INVISIBLE
-            tempImage = ColorFilters.greenColor(mainImage)
-            imageDemo.setImageBitmap(tempImage)
+            lifecycleScope.async{tempImage = ColorFilters.greenColor(mainImage)
+                imageDemo.setImageBitmap(tempImage)}
         }
 
         val grayFilter = findViewById(R.id.gray_filter) as ImageButton
@@ -109,8 +111,8 @@ class ImageFactory : AppCompatActivity() {
             slider.visibility = View.INVISIBLE
             val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
             sliderGaus.visibility = View.INVISIBLE
-            tempImage = ColorFilters.grayColor(mainImage)
-            imageDemo.setImageBitmap(tempImage)
+            lifecycleScope.async{tempImage = ColorFilters.grayColor(mainImage)
+                imageDemo.setImageBitmap(tempImage)}
         }
 
         val cancelChanges = findViewById(R.id.cancel_changes) as ImageButton
@@ -124,8 +126,8 @@ class ImageFactory : AppCompatActivity() {
 
         val blackWhiteFilter = findViewById(R.id.black_white_filter) as ImageButton
         blackWhiteFilter.setOnClickListener {
-            tempImage = ColorFilters.blackWhiteColor(mainImage)
-            imageDemo.setImageBitmap(tempImage)
+            lifecycleScope.async{tempImage = ColorFilters.blackWhiteColor(mainImage)
+                imageDemo.setImageBitmap(tempImage)}
         }
 
         val saveImage = findViewById(R.id.save_changes) as ImageButton
@@ -148,9 +150,8 @@ class ImageFactory : AppCompatActivity() {
                     val mTextView = findViewById(R.id.slider_val) as TextView
                     mTextView.visibility = View.VISIBLE
                     mTextView.setText(sliderContrast.getProgress().toString());
-                    tempImage = AlgoFilters.contrast(mainImage, progress)
-                    imageDemo.setImageBitmap(tempImage)
-
+                    lifecycleScope.async{tempImage = AlgoFilters.contrast(mainImage, progress)
+                        imageDemo.setImageBitmap(tempImage)}
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -163,14 +164,14 @@ class ImageFactory : AppCompatActivity() {
 
         val imageTurnRight = findViewById(R.id.image_turn_right) as ImageButton
         imageTurnRight.setOnClickListener {
-            mainImage = anotherAlgos.imageTurnRight(mainImage)
-            imageDemo.setImageBitmap(mainImage)
+            lifecycleScope.async{mainImage = anotherAlgos.imageTurnRight(mainImage)
+                imageDemo.setImageBitmap(mainImage)}
         }
 
         val imageTurnLeft = findViewById(R.id.image_turn_left) as ImageButton
         imageTurnLeft.setOnClickListener {
-            mainImage = anotherAlgos.imageTurnLeft(mainImage)
-            imageDemo.setImageBitmap(mainImage)
+            lifecycleScope.async{mainImage = anotherAlgos.imageTurnLeft(mainImage)
+                imageDemo.setImageBitmap(mainImage)}
         }
 
         val gaussianFilter = findViewById(R.id.gaussian_filter) as ImageButton
@@ -190,8 +191,8 @@ class ImageFactory : AppCompatActivity() {
                     if (sliderGaus.progress % 2 == 0) {
                         sliderGaus.progress += 1
                     }
-                    tempImage = AlgoFilters.gaussFilter(mainImage, sliderGaus.progress)
-                    imageDemo.setImageBitmap(tempImage)
+                    lifecycleScope.async { tempImage = AlgoFilters.gaussFilter(mainImage, sliderGaus.progress)
+                    imageDemo.setImageBitmap(tempImage)}
                 }
             })
         }
@@ -225,8 +226,8 @@ class ImageFactory : AppCompatActivity() {
                     if (sliderSharpness.progress % 2 == 0) {
                         sliderSharpness.progress += 1
                     }
-                    tempImage = AlgoFilters.unSharpMask(mainImage, sliderSharpness.progress)
-                    imageDemo.setImageBitmap(tempImage)
+                    lifecycleScope.async{tempImage = AlgoFilters.unSharpMask(mainImage, sliderSharpness.progress)
+                    imageDemo.setImageBitmap(tempImage)}
                 }
             })
         }
@@ -236,8 +237,8 @@ class ImageFactory : AppCompatActivity() {
             slider.visibility = View.INVISIBLE
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.INVISIBLE
-            tempImage = AlgoFilters.imageResize(mainImage, 0.5)
-            imageDemo.setImageBitmap(tempImage)
+            lifecycleScope.async{tempImage = AlgoFilters.imageResize(mainImage, 0.5)
+                imageDemo.setImageBitmap(tempImage)}
         }
 
         val faceDetection = findViewById(R.id.find_face) as ImageButton
@@ -246,8 +247,8 @@ class ImageFactory : AppCompatActivity() {
             slider.visibility = View.INVISIBLE
             val sliderContrast = findViewById(R.id.seekBar) as SeekBar
             sliderContrast.visibility = View.INVISIBLE
-            tempImage = FaceRecognition.drawRectangles(mainImage,weightsFile);
-            imageDemo.setImageBitmap(tempImage);
+            lifecycleScope.async{tempImage = FaceRecognition.drawRectangles(mainImage,weightsFile);
+                imageDemo.setImageBitmap(tempImage);}
         }
         imageDemo.setOnTouchListener(View.OnTouchListener { _: View, m: MotionEvent ->
             retouch.onTouchEvent(m)
