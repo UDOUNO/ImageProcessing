@@ -66,6 +66,8 @@ class ImageFactory : AppCompatActivity() {
         val weightsFile = File(weightsDir, "haarcascade_frontalface_alt_tree.xml");
         val outputStream = FileOutputStream(weightsFile);
 
+
+
         val buffer = ByteArray(4096);
         var bytesRead: Int
         val retouch: Retouch = Retouch(this.applicationContext, mainImage, imageDemo)
@@ -74,7 +76,7 @@ class ImageFactory : AppCompatActivity() {
         }
         inputStream.close()
         outputStream.close()
-
+        lifecycleScope.async{prepare(mainImage)};
         val redFilter = findViewById(R.id.red_filter) as ImageButton
         redFilter.setOnClickListener {
             val sliderGaus = findViewById(R.id.seek_bar_gaus) as SeekBar
@@ -257,6 +259,45 @@ class ImageFactory : AppCompatActivity() {
 
     private fun saveToTemp() {
 
+    }
+
+//    private suspend fun prepare(image: Bitmap){
+//        val imageDemo = AlgoFilters.imageResize(image,1.0)
+//        val gauss = findViewById(R.id.gaussian_filter) as ImageButton
+//        val unsharpMask = findViewById(R.id.sharpness) as ImageButton
+//        val con = findViewById(R.id.contrast) as ImageButton
+//        val bwf = findViewById(R.id.black_white_filter) as ImageButton
+//        val gray = findViewById(R.id.gray_filter) as ImageButton
+//        val green = findViewById(R.id.green_filter) as ImageButton
+//        val blue = findViewById(R.id.blue_filter) as ImageButton
+//        val red = findViewById(R.id.red_filter) as ImageButton
+//        gauss.setImageBitmap(AlgoFilters.gaussFilter(imageDemo,3))
+//        unsharpMask.setImageBitmap(AlgoFilters.unSharpMask(imageDemo,3))
+//        con.setImageBitmap(AlgoFilters.contrast(imageDemo,100))
+//        bwf.setImageBitmap(ColorFilters.blackWhiteColor(imageDemo))
+//        gray.setImageBitmap(ColorFilters.grayColor(imageDemo))
+//        green.setImageBitmap(ColorFilters.greenColor(imageDemo))
+//        blue.setImageBitmap(ColorFilters.blueColor(imageDemo))
+//        red.setImageBitmap(ColorFilters.redColor(imageDemo))
+//    }
+    private suspend fun prepare(image: Bitmap){
+        //val imageDemo = AlgoFilters.imageResize(image,0.5)
+        val gauss = findViewById(R.id.gaussian_filter) as ImageButton
+        val unsharpMask = findViewById(R.id.sharpness) as ImageButton
+        val con = findViewById(R.id.contrast) as ImageButton
+        val bwf = findViewById(R.id.black_white_filter) as ImageButton
+        val gray = findViewById(R.id.gray_filter) as ImageButton
+        val green = findViewById(R.id.green_filter) as ImageButton
+        val blue = findViewById(R.id.blue_filter) as ImageButton
+        val red = findViewById(R.id.red_filter) as ImageButton
+        gauss.setImageBitmap(AlgoFilters.gaussFilter(image,3))
+        unsharpMask.setImageBitmap(AlgoFilters.unSharpMask(image,3))
+        con.setImageBitmap(AlgoFilters.contrast(image,100))
+        bwf.setImageBitmap(ColorFilters.blackWhiteColor(image))
+        gray.setImageBitmap(ColorFilters.grayColor(image))
+        green.setImageBitmap(ColorFilters.greenColor(image))
+        blue.setImageBitmap(ColorFilters.blueColor(image))
+        red.setImageBitmap(ColorFilters.redColor(image))
     }
 
     private fun saveBitmap(bitmap: Bitmap) {

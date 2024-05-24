@@ -87,42 +87,65 @@ object AlgoFilters {
         val width = tempIm.width
         val height = tempIm.height
         val border1: Int = floor((kernelSize / 2).toDouble()).toInt()
-        val border2: Int = height - floor((kernelSize / 2).toDouble()).toInt()
+        //val border2: Int = height - floor((kernelSize / 2).toDouble()).toInt()
         val border2B: Int = width - floor((kernelSize / 2).toDouble()).toInt()
-        val numCores = Runtime.getRuntime().availableProcessors()
-        val deferredResults = (0 until numCores).map{core->GlobalScope.async{for (y in border1..<border2) {
-            for (x in border1..<border2B) {
+        Log.e("Gauss", "Kernel size is $kernelSize")
+        withContext(Dispatchers.Default) {
+            val numCores = Runtime.getRuntime().availableProcessors()
+            val rowsToCore = ceil(height.toDouble() / numCores).toInt()
+            val deferredResults = (0 until numCores).map { core ->
+                GlobalScope.async {
 
-                var sumColorRed: Double = 0.0
-                var sumColorGreen: Double = 0.0
-                var sumColorBlue: Double = 0.0
-                var sumColorAlpha: Double = 0.0
-                for (kY in -border1..border1) {
-                    for (kX in -border1..border1) {
-
-                        var maskPos =
-                            ((kX + floor((kernelSize / 2).toDouble())) + (kY + floor((kernelSize / 2).toDouble())) * kernelSize).toInt()
-
-                        sumColorRed += (tempIm.getPixel(x - kX, y - kY).red * weights[maskPos])
-                        sumColorGreen += (tempIm.getPixel(x - kX, y - kY).green * weights[maskPos])
-                        sumColorBlue += (tempIm.getPixel(x - kX, y - kY).blue * weights[maskPos])
-                        sumColorAlpha += (tempIm.getPixel(x - kX, y - kY).alpha * weights[maskPos])
-                    }
-                }
-                result.setPixel(
-                    x - floor((kernelSize / 2).toDouble()).toInt(),
-                    y - floor((kernelSize / 2).toDouble()).toInt(),
-                    Color.argb(
-                        sumColorAlpha.toInt(),
-                        sumColorRed.toInt(),
-                        sumColorGreen.toInt(),
-                        sumColorBlue.toInt()
+                    val startRow = core * rowsToCore + border1
+                    val endRow = min(startRow + rowsToCore, height - border1)
+                    Log.e(
+                        "Coroutine", "Hello from $core, my scope is ${startRow}, $endRow, $height"
                     )
-                )
-            }
-        }}}
-        deferredResults.forEach{it.await()}
+                    for (y in startRow..<endRow) {
+                        for (x in border1..<border2B) {
 
+                            var sumColorRed: Double = 0.0
+                            var sumColorGreen: Double = 0.0
+                            var sumColorBlue: Double = 0.0
+                            var sumColorAlpha: Double = 0.0
+                            for (kY in -border1..border1) {
+                                for (kX in -border1..border1) {
+
+                                    var maskPos =
+                                        ((kX + floor((kernelSize / 2).toDouble())) + (kY + floor((kernelSize / 2).toDouble())) * kernelSize).toInt()
+
+                                    sumColorRed += (tempIm.getPixel(
+                                        x - kX, y - kY
+                                    ).red * weights[maskPos])
+                                    sumColorGreen += (tempIm.getPixel(
+                                        x - kX, y - kY
+                                    ).green * weights[maskPos])
+                                    sumColorBlue += (tempIm.getPixel(
+                                        x - kX, y - kY
+                                    ).blue * weights[maskPos])
+                                    sumColorAlpha += (tempIm.getPixel(
+                                        x - kX, y - kY
+                                    ).alpha * weights[maskPos])
+                                }
+                            }
+                            result.setPixel(
+                                x - floor((kernelSize / 2).toDouble()).toInt(),
+                                y - floor((kernelSize / 2).toDouble()).toInt(),
+                                Color.argb(
+                                    sumColorAlpha.toInt(),
+                                    sumColorRed.toInt(),
+                                    sumColorGreen.toInt(),
+                                    sumColorBlue.toInt()
+                                )
+                            )
+                        }
+                    }
+                    Log.e("coroutine", "Goodbye from $core")
+                }
+            }
+            deferredResults.forEach { it.await() }
+        }
+        Log.e("Job Gauss", "Finished")
         return result
     }
 
@@ -155,8 +178,10 @@ object AlgoFilters {
         )
         for (pix in 0..pixels.size - 1) {
             var newR = max(min(((pixels[pix].red / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
-            var newB = max(min(((pixels[pix].blue / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
-            var newG = max(min(((pixels[pix].green / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
+            var newB =
+                max(min(((pixels[pix].blue / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
+            var newG =
+                max(min(((pixels[pix].green / 255.0 - 0.5) * value + 0.5) * 255.0, 255.0), 0.0)
             var newPix = Color.argb(pixels[pix].alpha, newR.toInt(), newG.toInt(), newB.toInt())
             pixels[pix] = newPix
         }
@@ -166,11 +191,7 @@ object AlgoFilters {
         return result
     }
 
-    fun mozaic(image: Bitmap): Bitmap {
-        return image
-    }
-
-    fun imageResize(image: Bitmap, koeff: Double): Bitmap {
+    suspend fun imageResize(image: Bitmap, koeff: Double): Bitmap {
         if (koeff > 1) {
             return enlargeImage(image, koeff);
         } else {
@@ -178,7 +199,7 @@ object AlgoFilters {
         }
     }
 
-    fun applyBilinear(image: Bitmap, koeff: Double): Bitmap {
+    suspend fun applyBilinear(image: Bitmap, koeff: Double): Bitmap {
         val result = Bitmap.createBitmap(
             Math.round(image.width * koeff).toInt(),
             Math.round(image.height * koeff).toInt(),
@@ -189,53 +210,66 @@ object AlgoFilters {
         var red: Double
         var green: Double
         var blue: Double
-        for (j in 0..<result.height) {
-            for (i in 0..<result.width) {
-                val x = (i / koeff)
-                val y = (j / koeff)
+        withContext(Dispatchers.Default) {
+            val numCores = Runtime.getRuntime().availableProcessors()
+            val rowsToCore = ceil(height.toDouble() / numCores).toInt()
+            val deferredRes = (0 until numCores).map { core ->
+                GlobalScope.async {
+                    val startRow = core * rowsToCore
+                    val endRow = min(startRow + rowsToCore, height)
+                    for (j in startRow..<endRow) {
+                        for (i in 0..<result.width) {
+                            val x = (i / koeff)
+                            val y = (j / koeff)
 
-                val x1 = x.toInt()
-                val x2 = minOf(x1 + 1, image.width - 1)
+                            val x1 = x.toInt()
+                            val x2 = min(x1 + 1, image.width - 1)
 
-                val y1 = y.toInt()
-                val y2 = minOf(y1 + 1, image.height - 1)
+                            val y1 = y.toInt()
+                            val y2 = min(y1 + 1, image.height - 1)
 
-                val pix1 = image.getPixel(x1, y1)
-                val pix2 = image.getPixel(x2, y1)
-                val pix3 = image.getPixel(x1, y2)
-                val pix4 = image.getPixel(x2, y2)
+                            val pix1 = image.getPixel(x1, y1)
+                            val pix2 = image.getPixel(x2, y1)
+                            val pix3 = image.getPixel(x1, y2)
+                            val pix4 = image.getPixel(x2, y2)
 
-                val kx = x - x1
-                val ky = y - y1
+                            val kx = x - x1
+                            val ky = y - y1
 
-                alpha =
-                    (Color.alpha(pix1) * (1 - kx) + Color.alpha(pix2) * kx) * (1 - ky) + (Color.alpha(
-                        pix3
-                    ) * (1 - kx) + Color.alpha(pix4) * kx) * (ky)
-                red =
-                    (Color.red(pix1) * (1 - kx) + Color.red(pix2) * kx) * (1 - ky) + (Color.red(pix3) * (1 - kx) + Color.red(
-                        pix4
-                    ) * kx) * (ky)
-                green =
-                    (Color.green(pix1) * (1 - kx) + Color.green(pix2) * kx) * (1 - ky) + (Color.green(
-                        pix3
-                    ) * (1 - kx) + Color.green(pix4) * kx) * (ky)
-                blue =
-                    (Color.blue(pix1) * (1 - kx) + Color.blue(pix2) * kx) * (1 - ky) + (Color.blue(
-                        pix3
-                    ) * (1 - kx) + Color.blue(pix4) * kx) * (ky)
+                            alpha =
+                                (Color.alpha(pix1) * (1 - kx) + Color.alpha(pix2) * kx) * (1 - ky) + (Color.alpha(
+                                    pix3
+                                ) * (1 - kx) + Color.alpha(pix4) * kx) * (ky)
+                            red =
+                                (Color.red(pix1) * (1 - kx) + Color.red(pix2) * kx) * (1 - ky) + (Color.red(
+                                    pix3
+                                ) * (1 - kx) + Color.red(
+                                    pix4
+                                ) * kx) * (ky)
+                            green =
+                                (Color.green(pix1) * (1 - kx) + Color.green(pix2) * kx) * (1 - ky) + (Color.green(
+                                    pix3
+                                ) * (1 - kx) + Color.green(pix4) * kx) * (ky)
+                            blue =
+                                (Color.blue(pix1) * (1 - kx) + Color.blue(pix2) * kx) * (1 - ky) + (Color.blue(
+                                    pix3
+                                ) * (1 - kx) + Color.blue(pix4) * kx) * (ky)
 
-                val newPixel: Int =
-                    Color.argb(alpha.toInt(), red.toInt(), green.toInt(), blue.toInt())
+                            val newPixel: Int =
+                                Color.argb(alpha.toInt(), red.toInt(), green.toInt(), blue.toInt())
 
 
-                result.setPixel(i, j, newPixel)
+                            result.setPixel(i, j, newPixel)
+                        }
+                    }
+                }
             }
+            deferredRes.forEach { it.await() }
         }
         return result
     }
 
-    fun applyReduction(image: Bitmap, koeff: Double): Bitmap {
+    suspend fun applyReduction(image: Bitmap, koeff: Double): Bitmap {
         val firstMip = image.copy(Bitmap.Config.ARGB_8888, true)
         val c: Double = 1 - ((1 - koeff) / 2)
         val secondMip = applyBilinear(firstMip, c)
@@ -276,11 +310,11 @@ object AlgoFilters {
         return newBitmap
     }
 
-    fun enlargeImage(image: Bitmap, koeff: Double): Bitmap {
+    suspend fun enlargeImage(image: Bitmap, koeff: Double): Bitmap {
         return applyBilinear(image, koeff);
     }
 
-    fun reduceImage(image: Bitmap, koeff: Double): Bitmap {
+    suspend fun reduceImage(image: Bitmap, koeff: Double): Bitmap {
         return applyReduction(image, koeff)
     }
 }

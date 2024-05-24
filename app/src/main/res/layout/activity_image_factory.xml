@@ -84,84 +84,84 @@
 
             <ImageButton
                 android:id="@+id/sharpness"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/gaussian_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/contrast"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/black_white_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/gray_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/green_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/blue_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/red_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp"
                 tools:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/find_face"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/image_resize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@drawable/ic_photo_black_48dp" />
 
             <ImageButton
                 android:id="@+id/apply_filter"
-                android:layout_width="75dp"
-                android:layout_height="match_parent"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 app:srcCompat="@android:drawable/checkbox_on_background" />
         </LinearLayout>
