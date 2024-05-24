@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation (libs.opencv)
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.recyclerview.selection)
     implementation(libs.androidx.core.ktx)
@@ -46,6 +47,7 @@ dependencies {
     implementation (libs.imagepicker)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.cast.framework)
+    implementation(libs.androidx.material3.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
