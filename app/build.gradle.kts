@@ -36,8 +36,9 @@ android {
 }
 
 dependencies {
+
     implementation (libs.opencv)
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform("androidx.compose:compose-bom:2023.06.01"))
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.recyclerview.selection)
     implementation(libs.androidx.core.ktx)

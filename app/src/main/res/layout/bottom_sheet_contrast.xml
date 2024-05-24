@@ -33,9 +33,7 @@
         tools:srcCompat="@drawable/cross" />
 
     <SeekBar
-        android:max="15"
-        android:progress="1"
-        android:id="@+id/gaus"
+        android:id="@+id/contrast"
         android:layout_width="321dp"
         android:layout_height="29dp"
         app:layout_constraintBottom_toBottomOf="parent"
