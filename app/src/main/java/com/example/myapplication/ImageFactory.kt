@@ -291,17 +291,66 @@ class ImageFactory : AppCompatActivity() {
             }
         }
 
-        val imageReSize = findViewById(R.id.image_resize) as ImageButton
-        imageReSize.setOnClickListener {
-            val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
-            slider.visibility = View.INVISIBLE
-            val sliderContrast = findViewById(R.id.seekBar) as SeekBar
-            sliderContrast.visibility = View.INVISIBLE
-            lifecycleScope.async {
-                tempImage = AlgoFilters.imageResize(mainImage, 0.5)
-                imageDemo.setImageBitmap(tempImage)
+        val resize = findViewById(R.id.image_resize) as ImageButton
+        resize.setOnClickListener {
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_resize, null)
+            val dismissChange = view.findViewById(R.id.cancel_changes) as ImageButton
+            val applyChange = view.findViewById(R.id.apply_filter) as ImageButton
+            val sliderRes = view.findViewById(R.id.resize) as SeekBar
+
+            dismissChange.setOnClickListener {
+                dialog.dismiss()
+                imageDemo.setImageBitmap(mainImage)
             }
+            applyChange.setOnClickListener {
+                dialog.dismiss()
+                mainImage = Bitmap.createBitmap(tempImage)
+                Log.e("", "Filter Applied")
+            }
+
+            dialog.setCancelable(false)
+            dialog.setContentView(view)
+            dialog.show()
+            sliderRes.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?, progress: Int, fromUser: Boolean
+                ) {
+                    val mTextView = findViewById(R.id.slider_val) as TextView
+                    mTextView.visibility = View.VISIBLE
+                    mTextView.setText(sliderRes.getProgress().toString());
+                    var progres =0
+                    if(sliderRes.progress <5){
+                        progres = 5
+                    }
+                    else{
+                        progres = sliderRes.progress
+                    }
+                    lifecycleScope.async {
+                        tempImage = AlgoFilters.imageResize(mainImage, progres.toDouble()/10)
+                        imageDemo.setImageBitmap(tempImage)
+                    }
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    val mTextView = findViewById(R.id.slider_val) as TextView
+                    mTextView.visibility = View.INVISIBLE
+                }
+            })
         }
+
+//        val imageReSize = findViewById(R.id.image_resize) as ImageButton
+//        imageReSize.setOnClickListener {
+//            val slider = findViewById(R.id.seek_bar_gaus) as SeekBar
+//            slider.visibility = View.INVISIBLE
+//            val sliderContrast = findViewById(R.id.seekBar) as SeekBar
+//            sliderContrast.visibility = View.INVISIBLE
+//            lifecycleScope.async {
+//                tempImage = AlgoFilters.imageResize(mainImage, 0.5)
+//                imageDemo.setImageBitmap(tempImage)
+//            }
+//        }
 
         val faceDetection = findViewById(R.id.find_face) as ImageButton
         faceDetection.setOnClickListener {

@@ -200,6 +200,7 @@ object AlgoFilters {
     }
 
     suspend fun applyBilinear(image: Bitmap, koeff: Double): Bitmap {
+        Log.e("sheet","$koeff")
         val result = Bitmap.createBitmap(
             Math.round(image.width * koeff).toInt(),
             Math.round(image.height * koeff).toInt(),
@@ -210,6 +211,7 @@ object AlgoFilters {
         var red: Double
         var green: Double
         var blue: Double
+
         withContext(Dispatchers.Default) {
             val numCores = Runtime.getRuntime().availableProcessors()
             val rowsToCore = ceil(height.toDouble() / numCores).toInt()
@@ -265,6 +267,7 @@ object AlgoFilters {
                 }
             }
             deferredRes.forEach { it.await() }
+            Log.e("sheet","hello")
         }
         return result
     }
